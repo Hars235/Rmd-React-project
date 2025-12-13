@@ -1,0 +1,72 @@
+.loc-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.loc-pill {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 40px;
+  padding: 10px 16px;
+  gap: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.loc-pin {
+  font-size: 20px;
+}
+
+.loc-city-btn {
+  display: flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.loc-city-text {
+  font-weight: 500;
+  color: #222;
+}
+
+.loc-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 15px;
+  color: #222;
+}
+
+.loc-map-btn {
+  border: none;
+  background: none;
+  color: teal;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.loc-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 30px;
+  background: #fff;
+  width: 200px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  z-index: 50;
+}
+
+.loc-option {
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.loc-option:hover {
+  background: #f0f0f0;
+}
+
+.selected {
+  background: #e0e0e0;
+}

@@ -1,0 +1,256 @@
+.rmd-advanced-search {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px; /* Slightly more rounded */
+    padding: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 8px;
+    height: 56px; /* Fixed height for consistency */
+}
+
+/* Logo */
+.rmd-search-logo {
+    height: 40px; /* Navbar size logo */
+    width: auto;
+    cursor: pointer;
+    margin-right: 12px;
+    object-fit: contain;
+}
+
+/* Orange Speciality Button */
+.rmd-search-speciality {
+    background-color: #f0ad4e; /* Orange matching screenshot */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0 16px;
+    height: 100%;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.rmd-search-speciality:hover {
+    background-color: #ec971f;
+}
+
+/* Field Container */
+.rmd-search-field-container {
+    flex: 1;
+    position: relative;
+    border-right: 1px solid #eee;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.rmd-search-field-container:last-of-type {
+    border-right: none;
+}
+
+.rmd-input-icon {
+    color: #888;
+    margin-right: 8px;
+}
+
+/* Standard Selects */
+.rmd-search-field-container select {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #333;
+    background: transparent;
+    cursor: pointer;
+    appearance: none; /* Remove default arrow to maybe use custom or keep default for now */
+    /* We keep default for City/Area for now, but custom Category dropdown below */
+}
+
+/* Custom Category Dropdown Input */
+.rmd-category-dropdown-container {
+    position: relative;
+    cursor: pointer;
+    min-width: 180px;
+    padding: 0;
+}
+
+.rmd-category-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    padding: 0 12px;
+}
+
+.rmd-selected-value {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.rmd-filter-icon {
+    color: #333;
+}
+
+/* Dropdown Menu */
+.rmd-custom-dropdown-menu {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    right: 0;
+    width: 280px; /* Wider than input to accommodate nested items */
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    border: 1px solid #f0f0f0;
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px 0;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dropdown Items */
+.rmd-dropdown-group {
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.rmd-dropdown-group:last-child {
+    border-bottom: none;
+}
+
+.rmd-dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    background: white;
+    transition: background 0.1s;
+}
+
+.rmd-dropdown-item:hover {
+    background-color: #f7faff;
+}
+
+.rmd-cat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.rmd-cat-label {
+    flex: 1;
+    font-size: 14px;
+    color: #444;
+}
+
+.rmd-accordion-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    padding: 4px;
+}
+
+/* Sub Items */
+.rmd-dropdown-subitems {
+    background-color: #f8f9fa;
+    padding: 4px 0;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.rmd-dropdown-subitem {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px 8px 44px; /* Indented */
+    cursor: pointer;
+}
+
+.rmd-dropdown-subitem:hover {
+    background-color: #e9ecef;
+}
+
+.rmd-sub-icon-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.rmd-sub-label {
+    font-size: 13px;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Search Button Icon */
+.rmd-search-btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 16px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rmd-search-btn-icon:hover {
+    color: #007bff;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .rmd-advanced-search {
+        flex-direction: column;
+        height: auto;
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .rmd-search-field-container {
+        width: 100%;
+        height: 44px;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .rmd-search-speciality {
+        width: 100%;
+        height: 44px;
+    }
+
+    .rmd-custom-dropdown-menu {
+        width: 100%;
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        border-radius: 12px 12px 0 0;
+        max-height: 50vh;
+    }
+}

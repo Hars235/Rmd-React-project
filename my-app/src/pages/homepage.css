@@ -1,0 +1,92 @@
+/* Home.css - hero full-screen and search placement */
+.home-container { width: 100%; min-height: 100vh; box-sizing: border-box; }
+
+.hero-section {
+  width: 100%;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(180deg, rgba(10,20,60,0.03), rgba(255,255,255,0)), url('/images/consult/reachMydoctor-intro.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 48px 16px;
+  box-sizing: border-box;
+}
+
+/* central content container */
+.hero-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+/* text */
+.hero-text { text-align: left; max-width: 720px; }
+.hero-title {
+  font-size: 36px;
+  line-height: 1.05;
+  margin: 0 0 12px;
+  color: #06203a;
+  font-weight: 700;
+}
+.highlight { color: #1a75ff; }
+
+/* subtitle */
+.hero-subtitle {
+  color: #334155;
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+/* search section sits visually prominent */
+.search-section {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 6px;
+}
+
+/* container around search bar (over hero) */
+.search-container {
+  width: 100%;
+  background: transparent;
+}
+
+/* small title above search */
+.search-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* hint */
+.search-hint {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* stats section (below) */
+.stats-section { margin-top: 18px; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 16px;
+}
+.stat-item { background: #fff; padding: 12px 14px; border-radius: 12px; box-shadow: 0 6px 20px rgba(2,6,23,0.04); }
+.stat-number { font-weight: 700; font-size: 18px; color: #0b2540; }
+.stat-label { font-size: 13px; color: #475569; margin-top: 6px; }
+
+/* responsive */
+@media (max-width: 900px) {
+  .hero-title { font-size: 28px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .hero-title { font-size: 22px; }
+  .stats-grid { grid-template-columns: 1fr; }
+}

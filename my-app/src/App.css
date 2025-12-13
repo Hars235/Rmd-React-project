@@ -1,0 +1,1836 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+.auth-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.auth-logo-row {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-logo {
+  height: 60px;
+  width: auto;
+}
+
+.auth-title-emoji {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.hi-text {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.auth-title {
+  font-size: 24px;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  color: #64748b;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.auth-label input {
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.auth-label input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.auth-phone-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-phone-code {
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  color: #475569;
+}
+
+.auth-phone-row input {
+  flex: 1;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px;
+  text-align: center;
+}
+
+.change-number {
+  margin-top: 8px;
+}
+
+/* Home page styles */
+.rmd-topbar {
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.rmd-topbar-inner {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+.rmd-logo {
+  height: 40px;
+}
+
+.rmd-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.rmd-nav-pills {
+  display: flex;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.rmd-nav-pill {
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.rmd-nav-pill.is-active {
+  background: white;
+  color: #1e40af;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rmd-nav-link {
+  padding: 8px 0;
+  border: none;
+  background: none;
+  font-weight: 500;
+  cursor: pointer;
+  color: #64748b;
+  position: relative;
+}
+
+.rmd-nav-link.is-active {
+  color: #1e40af;
+}
+
+.rmd-nav-link.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #1e40af;
+}
+
+.rmd-hero {
+  position: relative;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  padding: 40px 24px;
+}
+
+.rmd-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4); /* Slight dark overlay for text readability, but no blue */
+}
+
+.rmd-hero-inner {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.rmd-hero-text {
+  color: white;
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+
+.rmd-hero-hi {
+  font-size: 18px;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+
+.rmd-hero-title {
+  font-size: 36px;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.rmd-hero-sub {
+  font-size: 18px;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.rmd-search-panel {
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  max-width: 800px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  position: relative;
+  padding: 0;
+}
+
+.rmd-search-panel:focus-within {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.rmd-input {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border: none;
+  position: relative;
+}
+
+.rmd-input.rmd-location {
+  flex: 0.6;
+  border-right: 1px solid #e0e0e0;
+}
+
+.rmd-input-icon {
+  color: #a0aec0;
+  font-size: 18px;
+}
+
+.rmd-input select,
+.rmd-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+  color: #1e293b;
+  width: 100%;
+}
+
+.rmd-input input::placeholder {
+  color: #94a3b8;
+}
+
+.rmd-map-link {
+  display: none; /* Hidden based on reference, map pin icon is enough or can be added differently */
+}
+
+.rmd-search-btn {
+  display: none; /* Practo style often doesn't have a button, passing 'Search' button is optional or can be re-added if needed, but keeping logic simpler for now or restyling if user wants a button */
+}
+
+/* Re-adding search button as a minimal icon or keeping it if requested, but "looks like partco" usually implies seamless bar. 
+   However, user screenshot 1 shows a big "Search" button. Screenshot 2 shows just the bar. 
+   I will keep a search button but integrate it nicely or outside? 
+   Let's check the user request "looks like partco". Practo usually has the button on the right. 
+   I will keep the button but style it to fit the bar if it was there, or maybe the user wants EXACTLY the dropdown behavior.
+   Let's assume the unified bar ends with the input for now, and the search button is likely separate or integrated.
+   Actually, looking at the user's uploaded image 1, it has a big blue Search button. 
+   The user says "location bar and search bar lokks like partco". Practo has [Location] | [Search .......].
+   I will stick to that structure.
+*/
+
+.rmd-search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  border: 1px solid #e0e0e0;
+  border-top: none;
+  margin-top: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.search-suggestion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-suggestion-item:hover {
+  background: #f8fafc;
+}
+
+.suggestion-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #334155;
+}
+
+.suggestion-icon {
+  color: #94a3b8;
+}
+
+.suggestion-tag {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rmd-main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.rmd-section {
+  margin-bottom: 48px;
+}
+
+.rmd-section-sub {
+  color: #64748b;
+  margin-top: 8px;
+}
+
+.rmd-hero-cards-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.rmd-hero-card {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Softer shadow */
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid #f0f0f5;
+}
+
+.rmd-hero-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.rmd-hero-card-img {
+  height: 140px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end; /* Align image at bottom if it's a person cutout */
+  justify-content: center;
+  position: relative;
+}
+
+.rmd-hero-card-img img {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.rmd-hero-card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.rmd-hero-card-content h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+  line-height: 1.4;
+}
+
+.rmd-hero-card-content p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.rmd-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.rmd-result-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.rmd-result-name {
+  font-size: 18px;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.rmd-result-speciality {
+  color: #3b82f6;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.rmd-result-clinic {
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.rmd-result-city {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.rmd-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.rmd-map-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.rmd-map-title {
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+.rmd-map-iframe {
+  width: 100%;
+  height: 400px;
+  border: none;
+  border-radius: 8px;
+}
+
+.rmd-modal-close {
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* ================= Lab Tests Page ================= */
+.rmd-lab-page {
+  background-color: #f0f2f5;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+.rmd-lab-hero {
+  background-color: #fff;
+  padding: 20px 0 40px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.rmd-lab-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.rmd-lab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rmd-lab-header h1 {
+  font-size: 24px;
+  color: #2d2d32;
+  font-weight: 700;
+}
+
+.rmd-search-container-relative {
+  position: relative;
+  max-width: 800px;
+  width: 100%;
+}
+
+.rmd-lab-search-bar {
+  display: flex;
+  border: 1px solid #dfe3e7;
+  border-radius: 50px; /* Pill shape */
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s;
+}
+
+.rmd-lab-search-bar:focus-within {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: #3b82f6;
+}
+
+.rmd-lab-location {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  background: #f8f9fa;
+  cursor: pointer;
+  border-right: 1px solid #dfe3e7;
+  min-width: 180px;
+  justify-content: space-between;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  transition: background 0.2s;
+}
+
+.rmd-lab-location:hover {
+  background: #f1f5f9;
+}
+
+.rmd-loc-text {
+  font-weight: 600;
+  color: #414146;
+  flex: 1;
+  margin: 0 12px;
+  font-size: 14px;
+}
+
+.rmd-arrow-down {
+  font-size: 12px;
+  color: #787887;
+}
+
+.rmd-lab-input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  position: relative;
+}
+
+.rmd-lab-input-wrapper input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  padding: 12px 0;
+  color: #414146;
+  background: transparent;
+}
+
+.rmd-search-icon {
+  color: #787887;
+  font-size: 18px;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+/* Search Dropdown Items */
+.rmd-search-dropdown {
+  position: absolute;
+  top: 110%; /* Just below the search bar */
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  border: 1px solid #e0e0e0;
+  z-index: 100;
+  padding: 12px 0;
+  max-height: 400px;
+  overflow-y: auto;
+  animation: slideDown 0.2s ease-out;
+}
+
+.rmd-dropdown-section {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f5;
+}
+
+.rmd-dropdown-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.rmd-dropdown-header {
+  padding: 12px 20px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #787887;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rmd-dd-icon {
+  font-size: 14px;
+}
+
+.rmd-dropdown-item {
+  padding: 10px 48px; /* Indent to align with text */
+  font-size: 14px;
+  color: #2d2d32;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.rmd-dropdown-item:hover {
+  background: #f5f7fa;
+  color: #3b82f6;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Lab Sections */
+.rmd-lab-section {
+  padding-top: 30px;
+}
+
+.rmd-tag-green {
+  display: inline-block;
+  background-color: #e5f6ee;
+  color: #0c8c4e;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+/* Horizontal Scroll Container */
+.rmd-horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 20px 4px; /* Padding for shadow visibility */
+  scrollbar-width: thin;
+}
+
+/* Test Card */
+.rmd-test-card {
+  min-width: 280px;
+  max-width: 280px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.rmd-test-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.rmd-test-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.rmd-test-header h3 {
+  font-size: 16px;
+  color: #2d2d32;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.rmd-price {
+  font-weight: 700;
+  color: #14bef0;
+  font-size: 16px;
+}
+
+.rmd-test-desc {
+  font-size: 13px;
+  color: #787887;
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+.rmd-btn-add {
+  align-self: flex-start;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Package Card */
+.rmd-package-card {
+  min-width: 300px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.rmd-pkg-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #00bf00;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.rmd-pkg-title {
+  margin-top: 24px;
+  font-size: 18px;
+  color: #2d2d32;
+  margin-bottom: 4px;
+}
+
+.rmd-pkg-price {
+  font-size: 16px;
+  color: #414146;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.rmd-pkg-image-placeholder {
+  height: 120px;
+  background: #f0f8ff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+/* Tabs */
+.rmd-tabs {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.rmd-tab-pill {
+  border: none;
+  background: none;
+  font-size: 16px;
+  color: #787887;
+  padding-bottom: 8px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  font-weight: 500;
+}
+
+.rmd-tab-pill.active {
+  color: #2d2d32;
+  border-bottom-color: #2d2d32;
+}
+
+/* City Modal Styling */
+.rmd-city-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.rmd-city-search-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.rmd-city-modal-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #dfe3e7;
+  border-radius: 4px;
+}
+
+.rmd-modal-close-icon {
+  position: absolute;
+  right: -10px;
+  top: -15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #787887;
+}
+
+.rmd-top-cities h4 {
+  font-size: 12px;
+  color: #787887;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.rmd-cities-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding: 10px 0;
+}
+
+.rmd-city-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  padding: 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  min-height: 110px;
+}
+
+.rmd-city-item:hover {
+  background: #f8fafc;
+}
+
+.rmd-city-item.selected {
+  background: #f0f8ff; /* AliceBlue similar to screenshot */
+  color: #14bef0;
+  font-weight: 600;
+}
+
+.rmd-city-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Video Consult Page Styles */
+.vc-page {
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.vc-main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.vc-section {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.btn-outline {
+  background: white;
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+/* New Home Page Sections */
+
+/* Guarantee Section */
+.rmd-guarantee-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 40px;
+}
+
+.rmd-guarantee-content {
+    flex: 1;
+}
+
+.rmd-guarantee-content h2 {
+    font-size: 36px;
+    color: #2d2d32;
+    margin-bottom: 30px;
+    font-weight: 400;
+}
+
+.rmd-guarantee-content h2 strong {
+    font-weight: 700;
+}
+
+.rmd-guarantee-features {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.rmd-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    color: #414146;
+}
+
+.rmd-check-icon {
+    color: #24a0ed;
+    font-weight: bold;
+}
+
+.rmd-guarantee-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.phone-mockup {
+    width: 320px;
+    height: 600px;
+    background: #111; /* Dark bezel background */
+    border-radius: 48px;
+    border: 12px solid #111; /* Black bezel thickness */
+    box-shadow: 
+        0 0 0 12px #fff, /* White outer shell */
+        0 30px 60px rgba(0,0,0,0.2); /* Drop shadow */
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box; /* Ensure border is included in width if needed, but standard is content-box usually for sizing elements. Let's stick to explicit. */
+}
+
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    background: #000; /* Black background to blend with bezel */
+    border-radius: 32px; /* Smooth inner curve */
+    overflow: hidden;
+    position: relative;
+}
+
+/* Notch removed as it conflicts with image content */
+.phone-screen::before {
+    display: none;
+}
+
+.phone-screen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image fills the area */
+    display: block;
+}
+
+/* Articles Section */
+.rmd-articles-section {
+    background: #f8f8fb;
+    padding: 60px 20px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.rmd-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.rmd-articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.rmd-article-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.rmd-article-card:hover {
+    transform: translateY(-4px);
+}
+
+.rmd-article-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.rmd-article-content {
+    padding: 20px;
+}
+
+.rmd-article-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d2d32;
+    margin-bottom: 8px;
+}
+
+.rmd-article-author {
+    font-size: 14px;
+    color: #787887;
+    margin-bottom: 12px;
+}
+
+.rmd-article-stats {
+    font-size: 12px;
+    color: #787887;
+    border-top: 1px solid #f0f0f5;
+    padding-top: 12px;
+}
+
+/* Medicines Section */
+.rmd-medicines-section {
+    background: #fff;
+    padding: 60px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 80px; /* Space for banner */
+}
+
+.rmd-medicines-content h2 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #2d2d32;
+}
+
+.rmd-medicines-illustration {
+    font-size: 60px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.pill-shape {
+    display: inline-block;
+    padding: 20px;
+    background: #f0f9ff;
+    border-radius: 50%;
+}
+
+/* Floating Banner */
+
+
+/* Surgeries Page Styles */
+.surgeries-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+  padding: 40px 24px;
+}
+
+.surgeries-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.surgeries-header {
+  margin-bottom: 40px;
+}
+
+.surgeries-header h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.surgeries-header p {
+  color: #64748b;
+  font-size: 16px;
+}
+
+.surgeries-filters {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.search-bar {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+  min-width: 250px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input-wrapper input:focus {
+  border-color: #3b82f6;
+}
+
+.speciality-select {
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  background: white;
+  color: #334155;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.speciality-select:focus {
+  border-color: #3b82f6;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #f1f5f9;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.filter-btn:hover {
+  background: #e2e8f0;
+}
+
+.results-count {
+  margin-bottom: 16px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.no-results {
+  background: white;
+  padding: 48px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.no-results-title {
+  font-size: 18px;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.no-results-sub {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.surgeries-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.surgery-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.surgery-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+.surgery-card-header {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  padding: 20px;
+  color: white;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.title-wrapper h3 {
+  font-size: 18px;
+  margin: 0 0 6px 0;
+  font-weight: 700;
+}
+
+.speciality-tag {
+  font-size: 13px;
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+  margin: 0;
+}
+
+.favorite-btn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.heart-active {
+  fill: #fca5a5;
+  color: #fca5a5;
+}
+
+.heart-inactive {
+  color: white;
+}
+
+.surgery-card-body {
+  padding: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.surgery-desc {
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  flex: 1;
+}
+
+.surgery-details {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.surgery-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.border-top {
+  border-top: 1px solid #e2e8f0;
+  margin-top: 8px;
+  padding-top: 12px;
+}
+
+.detail-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.get-info-btn {
+  width: 100%;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.get-info-btn:hover {
+  background: #2563eb;
+}
+
+.surgeries-footer {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* Doctor Booking Flow Styles */
+.specialty-pill {
+  padding: 8px 16px;
+  background: #e0f2fe; /* Slightly darker light blue for visibility */
+  color: #0284c7;      /* Darker blue for contrast */
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.specialty-pill:hover {
+  background: #e0f2fe;
+}
+
+.specialty-pill.active {
+  background: #3b82f6;
+  color: white;
+}
+
+.doctor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.doctor-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: box-shadow 0.2s;
+}
+
+.doctor-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.doctor-info {
+  display: flex;
+  gap: 24px;
+}
+
+.doctor-img-wrapper {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.doctor-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.doctor-details h3 {
+  margin: 0 0 4px 0;
+  color: #1e293b;
+  font-size: 18px;
+}
+
+.doc-specialty {
+  color: #3b82f6;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  font-size: 14px;
+}
+
+.doc-exp, .doc-loc, .doc-fee {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.doc-avail {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.doctor-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+}
+
+/* Booking Modal */
+.booking-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.booking-modal {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+  animation: slideUp 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 12px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.doctor-summary {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.doctor-summary img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.doctor-summary h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: #1e293b;
+}
+
+.doctor-summary p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.selected-doc-info {
+  margin-bottom: 24px;
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.selected-doc-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+}
+
+.selected-doc-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.day-slots {
+  margin-bottom: 20px;
+}
+
+.day-slots h5 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #475569;
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 12px;
+}
+
+.slot-item {
+  padding: 8px;
+  border: 1px solid #3b82f6;
+  background: white;
+  color: #3b82f6;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.slot-item:hover {
+  background: #eff6ff;
+}
+
+.slot-item.selected {
+  background: #3b82f6;
+  color: white;
+}
+
+.modal-footer {
+  margin-top: 24px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 16px;
+}
+
+.full-width {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+}
+
+/* Confirmation View */
+ .confirmation-view {
+   text-align: center;
+   padding: 20px 0;
+ }
+ 
+ .success-icon {
+   display: flex;
+   justify-content: center;
+   margin-bottom: 24px;
+   animation: scaleUp 0.4s ease-out;
+ }
+ 
+ .confirmation-details {
+   background: #f8fafc;
+   padding: 24px;
+   border-radius: 12px;
+   margin-bottom: 24px;
+   border: 1px solid #e2e8f0;
+ }
+ 
+ .detail-row {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 16px;
+   padding-bottom: 16px;
+   border-bottom: 1px solid #e2e8f0;
+ }
+ 
+ .detail-row:last-child {
+   margin-bottom: 0;
+   padding-bottom: 0;
+   border-bottom: none;
+ }
+ 
+ .detail-row span {
+   color: #64748b;
+   font-size: 14px;
+ }
+ 
+ .detail-row strong {
+   color: #1e293b;
+   font-size: 15px;
+   font-weight: 600;
+ }
+ 
+ @keyframes scaleUp {
+   0% { transform: scale(0); opacity: 0; }
+   80% { transform: scale(1.1); opacity: 1; }
+   100% { transform: scale(1); opacity: 1; }
+ }
+
+.confirmation-view h2 {
+  margin: 0 0 8px 0;
+  color: #1e293b;
+}
+
+.confirmation-view p {
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+.confirmation-details {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.detail-row span {
+  color: #64748b;
+}
+
+.detail-row strong {
+  color: #1e293b;
+}
+/* ================= Top Navigation Refactor ================= */
+.rmd-topbar {
+  background-color: #ffffff;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.rmd-topbar-inner {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rmd-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.rmd-nav {
+  display: flex;
+  align-items: center;
+}
+
+/* Nav Group Container */
+.rmd-nav-group {
+  display: flex;
+  background-color: #F0F4F8;
+  padding: 4px;
+  border-radius: 8px;
+  gap: 2px;
+}
+
+/* Nav Item (Default) */
+.rmd-nav-item {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.rmd-nav-item:hover {
+  color: #1e293b;
+  background-color: rgba(0,0,0,0.03);
+}
+
+/* Active Nav Item */
+.rmd-nav-item.active {
+  background-color: #ffffff;
+  color: #2563eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  font-weight: 600;
+}
+
