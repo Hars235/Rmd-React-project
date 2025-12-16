@@ -1,0 +1,244 @@
+/* ==========================================================================
+   Sidebar Overlay & Drawer Base
+   ========================================================================== */
+.rmd-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.rmd-sidebar-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.rmd-sidebar-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 85%; /* Default for mobile */
+  max-width: 320px; /* Max width constraint */
+  height: 100%;
+  background: #ffffff;
+  z-index: 1001;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+}
+
+.rmd-sidebar-drawer.open {
+  transform: translateX(0);
+}
+
+/* ==========================================================================
+   Content Styling (Unified "Rich" Design)
+   ========================================================================== */
+
+/* Main Container */
+.rmd-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Header */
+.rmd-sidebar-header {
+  padding: 20px 16px;
+  background-color: #fff;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.rmd-user-profile {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+}
+
+.rmd-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.rmd-user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.rmd-user-info h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 2px 0;
+}
+
+.view-profile-link {
+  font-size: 13px;
+  color: #0ea5e9;
+  margin-bottom: 4px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.rmd-profile-status {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.rmd-header-arrow {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 4px;
+}
+
+/* Care Plan Banner */
+.rmd-care-plan-banner {
+  background: linear-gradient(90deg, #2e1065 0%, #4c1d95 100%);
+  margin: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  cursor: pointer;
+}
+
+.rmd-cp-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.rmd-cp-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.rmd-cp-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fbbf24; /* Goldish text */
+  margin-bottom: 2px;
+}
+
+.rmd-cp-sub {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Menu Items */
+.rmd-sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+}
+
+.rmd-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #334155;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.rmd-menu-item:hover {
+  background-color: #f8fafc;
+}
+
+.rmd-menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  margin-right: 12px;
+}
+
+.rmd-menu-label {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.rmd-menu-arrow {
+  color: #cbd5e1;
+  font-size: 18px;
+}
+
+/* Icon Box Styles */
+.icon-box.blue {
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Secondary / Footer Menu */
+.rmd-sidebar-footer-menu {
+  margin-top: 10px;
+  padding-bottom: 20px;
+}
+
+.rmd-sec-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.rmd-sec-item:hover {
+  background-color: #f8fafc;
+}
+
+.rmd-sec-label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.rmd-sec-arrow {
+  color: #cbd5e1;
+}
+
+/* Scrollbar */
+.rmd-sidebar-drawer::-webkit-scrollbar {
+  width: 4px;
+}
+.rmd-sidebar-drawer::-webkit-scrollbar-track {
+  background: transparent;
+}
+.rmd-sidebar-drawer::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}

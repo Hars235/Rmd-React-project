@@ -1,5 +1,5 @@
-/* src/pages/SurgeriesPage.css *//*
-import SearchBar from '../components/SearchBar';
+/* src/pages/SurgeriesPage.css */
+/* SearchBar import removed as it is invalid in CSS */
 
 /* Page root */
 .page-root {

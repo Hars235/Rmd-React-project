@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FC, type ChangeEvent } from "react";
 import { Search, Filter, Heart } from "lucide-react";
-import "../App.css"; // Ensure styles are applied
+import "./SurgeriesPage.css"; // Ensure styles are applied
 
 const MOCK_SURGERIES = [
   {
@@ -53,7 +53,7 @@ const MOCK_SURGERIES = [
   },
 ];
 
-const Surgeries = () => {
+const Surgeries: FC = () => {
   const [query, setQuery] = useState("");
   const [selectedSpeciality, setSelectedSpeciality] = useState("All");
   const [favorites, setFavorites] = useState<Record<number, boolean>>({});
@@ -112,14 +112,14 @@ const Surgeries = () => {
               <input
                 type="text"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
                 placeholder="Search surgeries, specialities..."
               />
             </div>
 
             <select
               value={selectedSpeciality}
-              onChange={(e) => setSelectedSpeciality(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => setSelectedSpeciality(e.target.value)}
               className="speciality-select"
             >
               {specialities.map((speciality) => (

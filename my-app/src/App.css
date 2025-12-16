@@ -1834,3 +1834,45 @@ body {
   font-weight: 600;
 }
 
+
+/* ================= Sidebar & Hamburger Refactor ================= */
+
+.rmd-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.rmd-hamburger {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  color: #334155;
+}
+
+.rmd-hamburger:hover {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+/* Sidebar Overlay - REMOVED (Replaced by Sidebar.tsx) */
+
+/* Responsive Navigation Toggles */
+/* Hamburger is now always visible as per user request for sidebar on web view */
+
+
+@media (max-width: 768px) {
+  .rmd-nav {
+    display: none;
+  }
+  .rmd-logo-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

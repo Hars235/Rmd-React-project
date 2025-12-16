@@ -1,11 +1,13 @@
 import React, { useEffect, useState, type FormEvent, type JSX } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Menu } from "lucide-react";
 import "./App.css";
 import VideoConsultPage from "./pages/VideoConsultPage";
-import SurgeriesPage from "./pages/surgeriespage";
+import SurgeriesPage from "./pages/SurgeriesPage";
 // import FindDoctorsPage from "./pages/FindDoctorsPage"; // uncomment if you have it
 import FindDoctorsPage from "./pages/FindDoctorsPage";
 import LabTestsPage from "./pages/LabTestsPage";
+import Sidebar from "./components/Sidebar";
 
 /* Assets */
 const BG_IMAGE_URL = "/images/consult/reachMydoctor-intro.jpg";
@@ -25,71 +27,72 @@ type ClinicInfo = {
 type HomeCard = { id: "video" | "find" | "lab" | "surgery"; title: string; subtitle: string; image: string; bgColor: string; };
 
 /* ================= TopNav Component ================= */
-/* ================= TopNav Component ================= */
+
 const TopNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const currentPath = location.pathname;
 
   const isActive = (path: string) => currentPath === path ? " active" : "";
 
+  // Prevent background scrolling when sidebar is open
+  useEffect(() => {
+    if (isSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isSidebarOpen]);
+
+  const navItems = [
+    { label: "Home", path: "/" },
+    { label: "Find Doctors", path: "/find-doctors" },
+    { label: "Video Consult", path: "/video-consult" },
+    { label: "Lab Tests", path: "/lab-tests" },
+    { label: "Surgeries", path: "/surgeries" },
+  ];
+
   return (
-    <header className="rmd-topbar">
-      <div className="rmd-topbar-inner">
-        <img 
-          src={LOGO_URL} 
-          alt="Reach My Doctor" 
-          className="rmd-logo" 
-          onClick={() => navigate("/")} 
-          style={{ cursor: "pointer" }}
-        />
-
-        <nav className="rmd-nav" aria-label="Main navigation">
-          {/* Unified Container for the pill-style group */}
-          <div className="rmd-nav-group">
-            <button
-              type="button"
-              className={`rmd-nav-item${isActive("/")}`}
-              onClick={() => navigate("/")}
+    <>
+      <header className="rmd-topbar">
+        <div className="rmd-topbar-inner">
+          <div className="rmd-logo-group">
+            <button 
+              className="rmd-hamburger"
+              onClick={() => setIsSidebarOpen(true)}
+              aria-label="Open menu"
             >
-              Home
+              <Menu size={24} color="#334155" />
             </button>
-
-            <button
-              type="button"
-              className={`rmd-nav-item${isActive("/find-doctors")}`}
-              onClick={() => navigate("/find-doctors")}
-            >
-              Find Doctors
-            </button>
-
-            <button
-              type="button"
-              className={`rmd-nav-item${isActive("/video-consult")}`}
-              onClick={() => navigate("/video-consult")}
-            >
-              Video Consult
-            </button>
-
-            <button
-              type="button"
-              className={`rmd-nav-item${isActive("/lab-tests")}`}
-              onClick={() => navigate("/lab-tests")}
-            >
-              Lab Tests
-            </button>
-
-            <button
-              type="button"
-              className={`rmd-nav-item${isActive("/surgeries")}`}
-              onClick={() => navigate("/surgeries")}
-            >
-              Surgeries
-            </button>
+            <img 
+              src={LOGO_URL} 
+              alt="Reach My Doctor" 
+              className="rmd-logo" 
+              onClick={() => navigate("/")} 
+              style={{ cursor: "pointer" }}
+            />
           </div>
-        </nav>
-      </div>
-    </header>
+
+          <nav className="rmd-nav" aria-label="Main navigation">
+            <div className="rmd-nav-group">
+              {navItems.map((item) => (
+                <button
+                  key={item.path}
+                  type="button"
+                  className={`rmd-nav-item${isActive(item.path)}`}
+                  onClick={() => navigate(item.path)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+    </>
   );
 };
 

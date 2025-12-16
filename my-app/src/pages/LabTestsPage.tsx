@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, type FC, type ChangeEvent } from "react";
 import "../App.css";
 
 /* --- Mock Data --- */
@@ -108,7 +108,7 @@ const CITIES = [
 
 const PACKAGE_TABS = ["Featured Checkups", "Women's Health", "Men's Health"];
 
-const LabTestsPage: React.FC = () => {
+const LabTestsPage: FC = () => {
   const [city, setCity] = useState("Bangalore");
   const [showCityModal, setShowCityModal] = useState(false);
   const [query, setQuery] = useState("");
@@ -178,7 +178,7 @@ const LabTestsPage: React.FC = () => {
                       type="text" 
                       placeholder="Search for tests, packages & profiles" 
                       value={query}
-                      onChange={(e) => setQuery(e.target.value)}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
                       onFocus={handleSearchFocus}
                       onBlur={handleSearchBlur}
                     />
