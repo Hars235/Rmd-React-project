@@ -7,6 +7,7 @@ import SurgeriesPage from "./pages/SurgeriesPage";
 // import FindDoctorsPage from "./pages/FindDoctorsPage"; // uncomment if you have it
 import FindDoctorsPage from "./pages/FindDoctorsPage";
 import LabTestsPage from "./pages/LabTestsPage";
+import ProfilePage from "./pages/ProfilePage";
 import Sidebar from "./components/Sidebar";
 
 /* Assets */
@@ -14,7 +15,12 @@ const BG_IMAGE_URL = "/images/consult/reachMydoctor-intro.jpg";
 const LOGO_URL = "/images/consult/logo.png";
 
 /* Types */
-type MainHomeProps = { name: string };
+type MainHomeProps = { 
+  name: string;
+  profileData: ProfileData;
+  updateProfileField: (field: keyof ProfileData, value: string) => void;
+  completionPercent: number;
+};
 type ArticleCard = { tag: string; title: string; author: string; image: string };
 type DoctorResult = { name: string; speciality: string; clinic: string; city: string };
 type ClinicInfo = {
@@ -26,9 +32,63 @@ type ClinicInfo = {
 };
 type HomeCard = { id: "video" | "find" | "lab" | "surgery"; title: string; subtitle: string; image: string; bgColor: string; };
 
+export interface ProfileData {
+  userName: string;
+  contactNumber: string;
+  email: string;
+  gender: string;
+  dob: string;
+  bloodGroup: string;
+  maritalStatus: string;
+  height: string;
+  weight: string;
+  emergencyContact: string;
+  location: string;
+  
+  // Medical
+  allergies: string;
+  currentMeds: string;
+  pastMeds: string;
+  chronicDiseases: string;
+  injuries: string;
+  surgeries: string;
+
+  // Lifestyle
+  smoking: string;
+  alcohol: string;
+  activityLevel: string;
+  foodPreference: string;
+  occupation: string;
+}
+
+const INITIAL_PROFILE_DATA: ProfileData = {
+    userName: "Harsha M",
+    contactNumber: "+91-8277634896",
+    email: "",
+    gender: "",
+    dob: "",
+    bloodGroup: "",
+    maritalStatus: "",
+    height: "",
+    weight: "",
+    emergencyContact: "",
+    location: "",
+    allergies: "",
+    currentMeds: "",
+    pastMeds: "",
+    chronicDiseases: "",
+    injuries: "",
+    surgeries: "",
+    smoking: "",
+    alcohol: "",
+    activityLevel: "",
+    foodPreference: "",
+    occupation: ""
+};
+
 /* ================= TopNav Component ================= */
 
-const TopNav: React.FC = () => {
+const TopNav: React.FC<{ userName?: string; completionPercent?: number }> = ({ userName, completionPercent = 0 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -91,7 +151,7 @@ const TopNav: React.FC = () => {
         </div>
       </header>
 
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} userName={userName} completionPercent={completionPercent} />
     </>
   );
 };
@@ -102,7 +162,32 @@ const App: React.FC = (): JSX.Element => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
+
   const [generatedOtp, setGeneratedOtp] = useState<string | null>(null);
+
+  // Load initial state from localStorage if available
+  const [profileData, setProfileData] = useState<ProfileData>(() => {
+    const saved = localStorage.getItem('RMD_PROFILE_DATA');
+    return saved ? JSON.parse(saved) : INITIAL_PROFILE_DATA;
+  });
+
+  // Persist profileData changes
+  useEffect(() => {
+    localStorage.setItem('RMD_PROFILE_DATA', JSON.stringify(profileData));
+  }, [profileData]);
+
+  // Calculate completion percentage
+  const calculateCompletion = (data: ProfileData) => {
+    const totalFields = Object.keys(data).length;
+    const filledFields = Object.values(data).filter(val => val.trim() !== "").length;
+    return Math.round((filledFields / totalFields) * 100);
+  };
+
+  const completionPercent = calculateCompletion(profileData);
+
+  const updateProfileField = (field: keyof ProfileData, value: string) => {
+    setProfileData(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSendOtp = (e: FormEvent) => {
     e.preventDefault();
@@ -594,7 +679,7 @@ const App: React.FC = (): JSX.Element => {
     );
   }
 
-  return <MainHome name={name} />;
+  return <MainHome name={name} profileData={profileData} updateProfileField={updateProfileField} completionPercent={completionPercent} />;
 };
 
 export default App;
@@ -602,7 +687,7 @@ export default App;
 
 
 /* ================= Dashboard Content ================= */
-const DashboardHome: React.FC<{ name: string }> = ({ name }) => {
+const DashboardHome: React.FC<{ name: string; profileData: ProfileData; completionPercent: number }> = ({ name, profileData, completionPercent }) => {
   const navigate = useNavigate();
   const [city, setCity] = useState("Bangalore");
 
@@ -670,7 +755,7 @@ const DashboardHome: React.FC<{ name: string }> = ({ name }) => {
   /* Default Home UI */
   return (
     <div className="rmd-page">
-      <TopNav />
+      <TopNav userName={name || profileData.userName} completionPercent={completionPercent} />
 
       {/* HERO */}
       <section className="rmd-hero" style={{ backgroundImage: `url('${BG_IMAGE_URL}')` }}>
@@ -871,14 +956,15 @@ const DashboardHome: React.FC<{ name: string }> = ({ name }) => {
 };
 
 /* ================= MAIN HOME ROUTER CONTAINER ================= */
-const MainHome: React.FC<MainHomeProps> = ({ name }) => {
+const MainHome: React.FC<MainHomeProps> = ({ name, profileData, updateProfileField, completionPercent }) => {
   return (
     <Routes>
-      <Route path="/" element={<DashboardHome name={name} />} />
+      <Route path="/" element={<DashboardHome name={name} profileData={profileData} completionPercent={completionPercent} />} />
       <Route path="/video-consult" element={<VideoConsultPage />} />
       <Route path="/surgeries" element={<SurgeriesPage />} />
       <Route path="/find-doctors" element={<FindDoctorsPage />} />
       <Route path="/lab-tests" element={<LabTestsPage />} />
+      <Route path="/profile" element={<ProfilePage data={profileData} onUpdate={updateProfileField} completion={completionPercent} />} />
     </Routes>
   );
 };

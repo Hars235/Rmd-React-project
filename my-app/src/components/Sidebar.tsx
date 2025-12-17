@@ -20,9 +20,11 @@ import { useNavigate } from "react-router-dom";
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  userName?: string;
+  completionPercent?: number;
 }
 
-const Sidebar: FC<SidebarProps> = ({ isOpen, onClose }) => {
+const Sidebar: FC<SidebarProps> = ({ isOpen, onClose, userName, completionPercent = 0 }) => {
   const navigate = useNavigate();
 
   const handleNavigation = (path: string) => {
@@ -70,9 +72,9 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <User size={24} color="#fff" />
               </div>
               <div className="rmd-user-info">
-                <h3>Harsha M</h3>
+                <h3>{userName || "Guest"}</h3>
                 <span className="view-profile-link" onClick={() => handleNavigation('/profile')}>View and edit profile</span>
-                <span className="rmd-profile-status">9% completed</span>
+                <span className="rmd-profile-status">{completionPercent}% completed</span>
               </div>
               <button className="rmd-header-arrow" onClick={() => handleNavigation('/profile')}>
                 <ArrowRight size={20} color="#787887" />
