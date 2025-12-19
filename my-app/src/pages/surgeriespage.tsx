@@ -1,6 +1,6 @@
-import { useMemo, useState, type FC, type ChangeEvent } from "react";
+import React, { useMemo, useState, type FC } from "react";
 import { Search, Filter, Heart } from "lucide-react";
-import "./SurgeriesPage.css"; // Ensure styles are applied
+import "./surgeriespage.css"; // Ensure styles are applied
 
 const MOCK_SURGERIES = [
   {
@@ -48,39 +48,38 @@ const MOCK_SURGERIES = [
     name: "Hip Replacement",
     speciality: "Orthopedics",
     duration: "2 hrs",
-    priceRange: "₹3,00,000 - ₹6,00,000",
-    description: "Total hip arthroplasty for joint replacement.",
+    priceRange: "₹1,50,000 - ₹2,50,000",
+    description: "Total hip arthroplasty for pain relief.",
   },
 ];
 
-const Surgeries: FC = () => {
+const SPECIALITIES = [
+  "General Surgery",
+  "Ophthalmology",
+  "Orthopedics",
+  "Cardiac Surgery",
+  "Gynecology",
+  "Urology",
+];
+
+const SurgeriesPage: FC = () => {
   const [query, setQuery] = useState("");
-  const [selectedSpeciality, setSelectedSpeciality] = useState("All");
+  const [selectedSpeciality, setSelectedSpeciality] = useState("");
   const [favorites, setFavorites] = useState<Record<number, boolean>>({});
 
-  const specialities = useMemo(() => {
-    const specialitySet = new Set(MOCK_SURGERIES.map((surgery) => surgery.speciality));
-    return ["All", ...Array.from(specialitySet).sort()];
-  }, []);
+  const specialities = useMemo(() => ["All Specialities", ...SPECIALITIES], []);
 
   const filteredSurgeries = useMemo(() => {
-    const searchTerm = query.trim().toLowerCase();
-    
     return MOCK_SURGERIES.filter((surgery) => {
-      // Filter by speciality
-      const matchesSpeciality = 
-        selectedSpeciality === "All" || surgery.speciality === selectedSpeciality;
-      
-      if (!matchesSpeciality) return false;
-      
-      // Filter by search query
-      if (!searchTerm) return true;
-      
-      return (
-        surgery.name.toLowerCase().includes(searchTerm) ||
-        surgery.speciality.toLowerCase().includes(searchTerm) ||
-        surgery.description.toLowerCase().includes(searchTerm)
-      );
+      const matchesSearch =
+        surgery.name.toLowerCase().includes(query.toLowerCase()) ||
+        surgery.description.toLowerCase().includes(query.toLowerCase());
+      const matchesSpeciality =
+        !selectedSpeciality ||
+        selectedSpeciality === "All Specialities" ||
+        surgery.speciality === selectedSpeciality;
+
+      return matchesSearch && matchesSpeciality;
     });
   }, [query, selectedSpeciality]);
 
@@ -96,7 +95,7 @@ const Surgeries: FC = () => {
   };
 
   return (
-    <div className="surgeries-page">
+    <div className="rmd-surgeries-page">
       <div className="surgeries-container">
         {/* Header Section */}
         <header className="surgeries-header">
@@ -112,14 +111,14 @@ const Surgeries: FC = () => {
               <input
                 type="text"
                 value={query}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
                 placeholder="Search surgeries, specialities..."
               />
             </div>
 
             <select
               value={selectedSpeciality}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => setSelectedSpeciality(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedSpeciality(e.target.value)}
               className="speciality-select"
             >
               {specialities.map((speciality) => (
@@ -215,4 +214,4 @@ const Surgeries: FC = () => {
   );
 };
 
-export default Surgeries;
+export default SurgeriesPage;

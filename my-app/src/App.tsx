@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type FormEvent, type JSX } from "react";
+import React, { useEffect, useState, type FormEvent } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Menu } from "lucide-react";
 import "./App.css";
@@ -8,7 +8,11 @@ import SurgeriesPage from "./pages/SurgeriesPage";
 import FindDoctorsPage from "./pages/FindDoctorsPage";
 import LabTestsPage from "./pages/LabTestsPage";
 import ProfilePage from "./pages/ProfilePage";
+import PhotoUploadPage from "./pages/PhotoUploadPage";
+import AppointmentsPage from "./pages/AppointmentsPage";
 import Sidebar from "./components/Sidebar";
+import ConsultationsPage from "./pages/ConsultationsPage";
+
 
 /* Assets */
 const BG_IMAGE_URL = "/images/consult/reachMydoctor-intro.jpg";
@@ -88,7 +92,12 @@ const INITIAL_PROFILE_DATA: ProfileData = {
 
 /* ================= TopNav Component ================= */
 
-const TopNav: React.FC<{ userName?: string; completionPercent?: number }> = ({ userName, completionPercent = 0 }) => {
+interface TopNavProps {
+    userName?: string;
+    completionPercent?: number;
+}
+
+const TopNav: React.FC<TopNavProps> = ({ userName, completionPercent = 0 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -157,7 +166,7 @@ const TopNav: React.FC<{ userName?: string; completionPercent?: number }> = ({ u
 };
 
 /* ================= App (signup -> otp -> home) ================= */
-const App: React.FC = (): JSX.Element => {
+const App: React.FC = () => {
   const [step, setStep] = useState<"signup" | "otp" | "home">("signup");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -965,6 +974,9 @@ const MainHome: React.FC<MainHomeProps> = ({ name, profileData, updateProfileFie
       <Route path="/find-doctors" element={<FindDoctorsPage />} />
       <Route path="/lab-tests" element={<LabTestsPage />} />
       <Route path="/profile" element={<ProfilePage data={profileData} onUpdate={updateProfileField} completion={completionPercent} />} />
+      <Route path="/profile/upload-photo" element={<PhotoUploadPage />} />
+      <Route path="/appointments" element={<AppointmentsPage />} />
+      <Route path="/consultations" element={<ConsultationsPage />} />
     </Routes>
   );
 };

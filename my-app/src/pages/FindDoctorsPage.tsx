@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import '../App.css';
 import AdvancedSearchBar from '../components/AdvancedSearchBar';
@@ -80,7 +81,7 @@ const MOCK_DOCTORS: Doctor[] = [
     fee: "₹800",
     availability: "Available Today",
     image: "https://www.practostatic.com/consumer-home/desktop/images/1597423628/dweb_find_doctors.png",
-     slots: [
+    slots: [
       { date: "Today", times: ["02:00 PM", "03:30 PM"] },
       { date: "Tomorrow", times: ["10:00 AM", "04:30 PM"] }
     ]
@@ -251,9 +252,11 @@ const MOCK_DOCTORS: Doctor[] = [
 ];
 
 const FindDoctorsPage: React.FC = () => {
-
+    const location = useLocation();
     const [city, setCity] = useState("Hyderabad");
-    const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
+    const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(() => {
+        return new URLSearchParams(location.search).get('category');
+    });
     const [area, setArea] = useState("");
     const [type, setType] = useState("");
     

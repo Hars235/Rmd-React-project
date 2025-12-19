@@ -1,0 +1,141 @@
+.appointments-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.appointments-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.appointments-header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.appointments-header p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.appointments-search-container {
+  max-width: 600px;
+  margin: 0 auto 3rem auto;
+  position: relative;
+}
+
+.appointments-search-box {
+  width: 100%;
+  padding: 1rem 1.5rem 1rem 3rem;
+  border-radius: 50px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.appointments-search-box:focus {
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #3498db;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #95a5a6;
+}
+
+.categories-section {
+  margin-top: 2rem;
+}
+
+.categories-section h2 {
+  margin-bottom: 1.5rem;
+  color: #34495e;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.category-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #3498db;
+}
+
+.category-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #f0f8ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3498db;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.category-card:hover .category-icon-wrapper {
+  background-color: #3498db;
+  color: white;
+}
+
+.category-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+/* Specific colors for categories can be added here if needed, 
+   currently keeping a unified premium blue theme. */
+
+@media (max-width: 768px) {
+  .appointments-page {
+    padding: 1rem;
+  }
+  
+  .appointments-header h1 {
+    font-size: 2rem;
+  }
+  
+  .appointments-search-box {
+    padding: 0.8rem 1rem 0.8rem 2.5rem;
+  }
+  
+  .category-card {
+    padding: 1.5rem;
+  }
+}

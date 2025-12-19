@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { 
-  X, 
+
   Calendar, 
   FlaskConical, 
   Pill, 

@@ -1,4 +1,4 @@
-import { useState, type FC, type ChangeEvent } from "react";
+import React, { useState, type FC } from "react";
 import "../App.css";
 
 /* --- Mock Data --- */
@@ -178,7 +178,7 @@ const LabTestsPage: FC = () => {
                       type="text" 
                       placeholder="Search for tests, packages & profiles" 
                       value={query}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
                       onFocus={handleSearchFocus}
                       onBlur={handleSearchBlur}
                     />

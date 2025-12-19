@@ -50,8 +50,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ data, onUpdate, completion })
   // But the render methods use 'updateField' name.
   const updateField = onUpdate;
 
-
-
   const renderPersonalTab = () => (
     <>
       <div className="rmd-field-row" style={{ alignItems: 'flex-start' }}>
@@ -60,46 +58,46 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ data, onUpdate, completion })
              <input 
                 className="rmd-editable-input" 
                 value={data.userName} 
-                onChange={(e) => updateField('userName', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('userName', e.target.value)}
                 style={{ fontSize: '16px', fontWeight: 500, borderBottom: '1px dashed #ccc' }}
              />
         </div>
-        <button className="rmd-add-photo-btn">
+        <button className="rmd-add-photo-btn" onClick={() => navigate('/profile/upload-photo')}>
           add<br/>photo
         </button>
       </div>
 
-      <EditableProfileRow label="Contact Number" value={data.contactNumber} onSave={(v) => updateField('contactNumber', v)} />
-      <EditableProfileRow label="Email Id" value={data.email} onSave={(v) => updateField('email', v)} placeholder="Add email" />
-      <EditableProfileRow label="Gender" value={data.gender} onSave={(v) => updateField('gender', v)} placeholder="Add gender" />
-      <EditableProfileRow label="Date of Birth" value={data.dob} onSave={(v) => updateField('dob', v)} placeholder="yyyy mm dd" />
-      <EditableProfileRow label="Blood Group" value={data.bloodGroup} onSave={(v) => updateField('bloodGroup', v)} placeholder="add blood group" />
-      <EditableProfileRow label="Marital Status" value={data.maritalStatus} onSave={(v) => updateField('maritalStatus', v)} placeholder="add marital status" />
-      <EditableProfileRow label="Height" value={data.height} onSave={(v) => updateField('height', v)} placeholder="add height" />
-      <EditableProfileRow label="Weight" value={data.weight} onSave={(v) => updateField('weight', v)} placeholder="add weight" />
-      <EditableProfileRow label="Emergency Contact" value={data.emergencyContact} onSave={(v) => updateField('emergencyContact', v)} placeholder="add emergency details" />
-      <EditableProfileRow label="Location" value={data.location} onSave={(v) => updateField('location', v)} placeholder="add details" isLast />
+      <EditableProfileRow label="Contact Number" value={data.contactNumber} onSave={(v: string) => updateField('contactNumber', v)} />
+      <EditableProfileRow label="Email Id" value={data.email} onSave={(v: string) => updateField('email', v)} placeholder="Add email" />
+      <EditableProfileRow label="Gender" value={data.gender} onSave={(v: string) => updateField('gender', v)} placeholder="Add gender" />
+      <EditableProfileRow label="Date of Birth" value={data.dob} onSave={(v: string) => updateField('dob', v)} placeholder="yyyy mm dd" />
+      <EditableProfileRow label="Blood Group" value={data.bloodGroup} onSave={(v: string) => updateField('bloodGroup', v)} placeholder="add blood group" />
+      <EditableProfileRow label="Marital Status" value={data.maritalStatus} onSave={(v: string) => updateField('maritalStatus', v)} placeholder="add marital status" />
+      <EditableProfileRow label="Height" value={data.height} onSave={(v: string) => updateField('height', v)} placeholder="add height" />
+      <EditableProfileRow label="Weight" value={data.weight} onSave={(v: string) => updateField('weight', v)} placeholder="add weight" />
+      <EditableProfileRow label="Emergency Contact" value={data.emergencyContact} onSave={(v: string) => updateField('emergencyContact', v)} placeholder="add emergency details" />
+      <EditableProfileRow label="Location" value={data.location} onSave={(v: string) => updateField('location', v)} placeholder="add details" isLast />
     </>
   );
 
   const renderMedicalTab = () => (
     <>
-      <EditableProfileRow label="Allergies" value={data.allergies} onSave={(v) => updateField('allergies', v)} placeholder="add allergies" />
-      <EditableProfileRow label="Current Medications" value={data.currentMeds} onSave={(v) => updateField('currentMeds', v)} placeholder="add medications" />
-      <EditableProfileRow label="Past Medications" value={data.pastMeds} onSave={(v) => updateField('pastMeds', v)} placeholder="add medications" />
-      <EditableProfileRow label="Chronic Diseases" value={data.chronicDiseases} onSave={(v) => updateField('chronicDiseases', v)} placeholder="add disease" />
-      <EditableProfileRow label="Injuries" value={data.injuries} onSave={(v) => updateField('injuries', v)} placeholder="add incident" />
-      <EditableProfileRow label="Surgeries" value={data.surgeries} onSave={(v) => updateField('surgeries', v)} placeholder="add surgeries" isLast />
+      <EditableProfileRow label="Allergies" value={data.allergies} onSave={(v: string) => updateField('allergies', v)} placeholder="add allergies" />
+      <EditableProfileRow label="Current Medications" value={data.currentMeds} onSave={(v: string) => updateField('currentMeds', v)} placeholder="add medications" />
+      <EditableProfileRow label="Past Medications" value={data.pastMeds} onSave={(v: string) => updateField('pastMeds', v)} placeholder="add medications" />
+      <EditableProfileRow label="Chronic Diseases" value={data.chronicDiseases} onSave={(v: string) => updateField('chronicDiseases', v)} placeholder="add disease" />
+      <EditableProfileRow label="Injuries" value={data.injuries} onSave={(v: string) => updateField('injuries', v)} placeholder="add incident" />
+      <EditableProfileRow label="Surgeries" value={data.surgeries} onSave={(v: string) => updateField('surgeries', v)} placeholder="add surgeries" isLast />
     </>
   );
 
   const renderLifestyleTab = () => (
     <>
-       <EditableProfileRow label="Smoking Habits" value={data.smoking} onSave={(v) => updateField('smoking', v)} placeholder="add details" />
-       <EditableProfileRow label="Alcohol consumption" value={data.alcohol} onSave={(v) => updateField('alcohol', v)} placeholder="add details" />
-       <EditableProfileRow label="Activity level" value={data.activityLevel} onSave={(v) => updateField('activityLevel', v)} placeholder="add details" />
-       <EditableProfileRow label="Food Preference" value={data.foodPreference} onSave={(v) => updateField('foodPreference', v)} placeholder="add lifestyle" />
-       <EditableProfileRow label="Occupation" value={data.occupation} onSave={(v) => updateField('occupation', v)} placeholder="add occupation" isLast />
+       <EditableProfileRow label="Smoking Habits" value={data.smoking} onSave={(v: string) => updateField('smoking', v)} placeholder="add details" />
+       <EditableProfileRow label="Alcohol consumption" value={data.alcohol} onSave={(v: string) => updateField('alcohol', v)} placeholder="add details" />
+       <EditableProfileRow label="Activity level" value={data.activityLevel} onSave={(v: string) => updateField('activityLevel', v)} placeholder="add details" />
+       <EditableProfileRow label="Food Preference" value={data.foodPreference} onSave={(v: string) => updateField('foodPreference', v)} placeholder="add lifestyle" />
+       <EditableProfileRow label="Occupation" value={data.occupation} onSave={(v: string) => updateField('occupation', v)} placeholder="add occupation" isLast />
     </>
   );
 

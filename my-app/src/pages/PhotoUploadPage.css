@@ -1,0 +1,77 @@
+.rmd-photo-upload-page {
+    background-color: #f5f7fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.rmd-photo-header {
+    background-color: white;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.rmd-ph-back {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.rmd-ph-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.rmd-upload-options {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 32px 16px;
+    align-items: center;
+    justify-content: center;
+}
+
+.rmd-upload-card {
+    background: white;
+    width: 100%;
+    max-width: 320px;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+}
+
+.rmd-upload-card:active {
+    transform: scale(0.98);
+}
+
+.rmd-upload-icon-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #e6f0ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rmd-upload-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
