@@ -1,0 +1,86 @@
+export const specializations = {
+  clinic: {
+    icon: "flaticon-hospital-medical-signal-of-a-cross-in-a-circle",
+    types: ["Clinic", "Children Clinic"],
+  },
+  doctor: {
+    icon: "flaticon-medical-doctor-specialist",
+    types: [
+      "General Physician",
+      "Pediatrician",
+      "Dermatologist",
+      "ENT Specialist",
+      "Gynecologist",
+      "Physiotherapist",
+      "Cardiologist",
+      "Chest Physician",
+      "Endodontist",
+      "Endocrinology",
+      "Gastroenterology",
+      "Geriatric Medicine",
+      "Hematology",
+      "Immunology",
+      "Intensivist",
+      "Implantologist",
+      "Neonatology",
+      "Nephrology",
+      "Neurologist",
+      "Oncologist",
+      "Ophthalmology",
+      "Orthopedist",
+      "Pathology",
+      "Plastic Surgery",
+      "Psychiatry",
+      "Pulmonologist",
+      "Radiologist",
+      "Rheumatology",
+      "Sports Medicine",
+      "Speech Therapist",
+      "Urology",
+    ],
+  },
+  dentist: {
+    icon: "flaticon-teeth-silhouette",
+    types: ["Dentist", "Orthodontist", "Pediatric Dentist", "Periodontist"],
+  },
+  diagnostics: {
+    icon: "flaticon-dosage-medical-tool",
+    types: ["Diagnostics"],
+  },
+  hospital: {
+    icon: "flaticon-hospital-building-front",
+    types: ["Hospital"],
+  },
+  pharmacy: {
+    icon: "flaticon-drugs-capsules-and-pills",
+    types: ["Pharmacy"],
+  },
+  homeopathy: {
+    icon: "flaticon-medicines-bowl",
+    types: ["Homeopathy"],
+  },
+  dietitian: {
+    icon: "flaticon-stethoscope-medical-heart-beats-control-tool",
+    types: ["Dietitian"],
+  },
+  nutritionist: {
+    icon: "flaticon-stethoscope-medical-heart-beats-control-tool",
+    types: ["Nutritionist"],
+  },
+  ayurveda: {
+    icon: "flaticon-medicines-bowl",
+    types: ["Ayurveda"],
+  },
+  naturopathy: {
+    icon: "flaticon-medicines-bowl",
+    types: ["Naturopathy"],
+  },
+  siddha: {
+    icon: "flaticon-medicines-bowl",
+    types: ["Siddha"],
+  },
+  yoga: {
+    icon: "flaticon-medicines-bowl",
+    types: ["Yoga"],
+  },
+};

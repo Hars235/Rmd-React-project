@@ -1,0 +1,61 @@
+
+.app-search-bar-container {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 50px; /* Pill shape */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Soft shadow */
+    width: 100%;
+    max-width: 800px; /* Or fit container */
+    height: 50px;
+    margin: 0 auto;
+    position: relative;
+    border: 1px solid #e5e7eb;
+}
+
+.app-search-specialty-btn {
+    background-color: #f0ad4e; /* Orange matching screenshot */
+    color: white;
+    height: 100%; /* Match container height */
+    border: none;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    padding: 0 24px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.app-search-specialty-btn:hover {
+    background-color: #ec971f;
+}
+
+.app-search-icon-wrapper {
+    padding-left: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    height: 100%;
+    font-size: 15px;
+    color: #374151;
+    padding: 0 16px;
+    background: transparent;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+.app-search-input::placeholder {
+    color: #9ca3af;
+}

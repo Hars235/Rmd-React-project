@@ -24,36 +24,180 @@
 }
 
 .appointments-search-container {
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto 3rem auto;
   position: relative;
 }
 
-.appointments-search-box {
-  width: 100%;
-  padding: 1rem 1.5rem 1rem 3rem;
-  border-radius: 50px;
-  border: 1px solid #e0e0e0;
-  background: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  font-size: 1rem;
-  transition: all 0.3s ease;
+/* Combined Search Bar Styling */
+.appointments-combined-search {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 50px; /* Pill shape for overall container */
+    padding: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    width: 100%;
+    transition: all 0.3s ease;
 }
 
-.appointments-search-box:focus {
-  outline: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-color: #3498db;
+.appointments-combined-search:focus-within {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    border-color: #3498db;
 }
 
-.search-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #95a5a6;
+/* Specialty Dropdown */
+.specialty-dropdown-container {
+    position: relative;
+    height: 44px;
 }
 
+.specialty-dropdown-btn {
+    background-color: #f0ad4e; /* Orange */
+    color: white;
+    border: none;
+    border-radius: 40px;
+    padding: 0 20px;
+    height: 100%;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.specialty-dropdown-btn:hover {
+    background-color: #ec971f;
+}
+
+.specialty-dropdown-menu {
+    position: absolute;
+    top: 120%;
+    left: 0;
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    border: 1px solid #f0f0f0;
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px 0;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Divider */
+.search-input-divider {
+    width: 1px;
+    height: 24px;
+    background-color: #eee;
+    margin: 0 12px;
+    display: none; /* Hide divider if using button pill style inside */
+}
+
+/* Search Input Wrapper */
+.search-input-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+}
+
+.search-icon-integrated {
+    color: #95a5a6;
+    margin-right: 12px;
+}
+
+.appointments-search-box-integrated {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 8px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Reusing Dropdown Item Styles */
+.rmd-dropdown-group { border-bottom: 1px solid #f9f9f9; }
+.rmd-dropdown-group:last-child { border-bottom: none; }
+
+.rmd-dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.rmd-dropdown-item:hover { background-color: #f7faff; }
+
+.rmd-cat-icon { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin-right: 12px; 
+}
+
+.rmd-cat-label { 
+    flex: 1; 
+    font-size: 15px; 
+    color: #444; 
+    font-weight: 500;
+}
+
+.rmd-accordion-toggle { 
+    display: flex; 
+    align-items: center; 
+    color: #999; 
+    padding: 4px; 
+}
+
+.rmd-dropdown-subitems { 
+    background-color: #f8f9fa; 
+    padding: 4px 0; 
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.rmd-dropdown-subitem { 
+    display: flex; 
+    align-items: center; 
+    padding: 10px 20px 10px 52px; /* Indented */
+    cursor: pointer; 
+}
+
+.rmd-dropdown-subitem:hover { background-color: #e9ecef; }
+
+.rmd-sub-icon-circle { 
+    width: 24px; 
+    height: 24px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: white; 
+    font-size: 10px; 
+    font-weight: bold; 
+    margin-right: 12px; 
+    flex-shrink: 0;
+}
+
+.rmd-sub-label { 
+    font-size: 14px; 
+    color: #555; 
+}
+
+/* Existing Styles (Keep what's needed) */
 .categories-section {
   margin-top: 2rem;
 }
@@ -119,9 +263,7 @@
   font-weight: 500;
 }
 
-/* Specific colors for categories can be added here if needed, 
-   currently keeping a unified premium blue theme. */
-
+/* Mobile Responsive */
 @media (max-width: 768px) {
   .appointments-page {
     padding: 1rem;
@@ -131,11 +273,33 @@
     font-size: 2rem;
   }
   
-  .appointments-search-box {
-    padding: 0.8rem 1rem 0.8rem 2.5rem;
+  .appointments-search-container {
+      margin-bottom: 2rem;
+  }
+
+  /* Stack search bar on mobile if needed, or keep pill */
+  .appointments-combined-search {
+      flex-direction: column;
+      height: auto;
+      border-radius: 16px;
+      padding: 12px;
+      gap: 12px;
+      align-items: stretch;
+  }
+
+  .specialty-dropdown-container {
+      width: 100%;
   }
   
-  .category-card {
-    padding: 1.5rem;
+  .specialty-dropdown-btn {
+      width: 100%;
+      justify-content: space-between;
+      border-radius: 8px;
+  }
+
+  .search-input-wrapper {
+      padding-left: 0;
+      border-top: 1px solid #eee;
+      padding-top: 12px;
   }
 }

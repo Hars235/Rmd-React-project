@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Search, MapPin, Filter, ChevronDown, ChevronUp, Stethoscope, Building2, Building, Pill, Smile, Leaf, Activity } from 'lucide-react';
+import { Search, MapPin, Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import './AdvancedSearchBar.css';
 
 interface AdvancedSearchBarProps {
@@ -8,57 +8,19 @@ interface AdvancedSearchBarProps {
   areas?: string[];
   types?: string[];
   onSearch: (filters: { specialty: string; city: string; area: string; type: string }) => void;
+  onAreaInputChange?: (query: string) => void;
   initialFilters?: { specialty: string; city: string; area: string; type: string };
 }
 
-// Interfaces for Category Data
-interface SubCategory {
-    id: string;
-    label: string;
-    icon: React.ReactNode | string; // ReactNode or string char
-    color: string;
-}
-
-interface Category {
-    id: string;
-    label: string;
-    icon: React.ReactNode;
-    color: string;
-    subCategories: SubCategory[];
-}
-
-// Mock Data for Categories matching the screenshot
-const SEARCH_CATEGORIES: Category[] = [
-  { 
-    id: 'doctor', 
-    label: 'Doctor', 
-    icon: <Stethoscope size={18} />,
-    color: '#007bff', // Blue
-    subCategories: [
-      { id: 'General Physician', label: 'General Physician', icon: 'G', color: '#6c757d' },
-      { id: 'Pediatrician', label: 'Pediatrician', icon: 'P', color: '#e83e8c' },
-      { id: 'Dermatologist', label: 'Dermatologist', icon: 'D', color: '#fd7e14' },
-      { id: 'ENT Specialist', label: 'ENT Specialist', icon: 'E', color: '#007bff' },
-      { id: 'Gynecologist/Obstetrician', label: 'Gynecologist/Obstetrician', icon: 'G', color: '#28a745' },
-      { id: 'Physiotherapist', label: 'Physiotherapist', icon: 'P', color: '#20c997' },
-      { id: 'Urologist', label: 'Urologist', icon: 'U', color: '#007bff' },
-      { id: 'Cardiologist', label: 'Cardiologist', icon: 'C', color: '#dc3545' }
-    ]
-  },
-  { id: 'clinic', label: 'Clinic', icon: <Building2 size={18} />, color: '#17a2b8', subCategories: [] },
-  { id: 'dentist', label: 'Dentist', icon: <Smile size={18} />, color: '#007bff', subCategories: [] },
-  { id: 'diagnostics', label: 'Diagnostics', icon: <Activity size={18} />, color: '#17a2b8', subCategories: [] }, 
-  { id: 'hospital', label: 'Hospital', icon: <Building size={18} />, color: '#dc3545', subCategories: [] },
-  { id: 'pharmacy', label: 'Pharmacy', icon: <Pill size={18} />, color: '#28a745', subCategories: [] },
-  { id: 'homeopathy', label: 'Homeopathy', icon: <Leaf size={18} />, color: '#20c997', subCategories: [] }
-];
+import { SEARCH_CATEGORIES } from '../data/mockData';
 
 const LOGO_URL = "/images/consult/logo.png";
 
 const AdvancedSearchBar: React.FC<AdvancedSearchBarProps> = ({  
   locations, 
-  areas = ['Uttarahalli', 'Jayanagar', 'Indiranagar', 'Koramangala', 'Whitefield'], 
+  areas = [], 
   onSearch,
+  onAreaInputChange,
   initialFilters 
 }) => {
   const navigate = useNavigate();
@@ -69,9 +31,11 @@ const AdvancedSearchBar: React.FC<AdvancedSearchBarProps> = ({
   
   // existing state code...
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showAreaDropdown, setShowAreaDropdown] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>('doctor'); 
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const areaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     onSearch({ specialty, city, area, type });
@@ -81,6 +45,9 @@ const AdvancedSearchBar: React.FC<AdvancedSearchBarProps> = ({
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
+      }
+      if (areaRef.current && !areaRef.current.contains(event.target as Node)) {
+        setShowAreaDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -132,14 +99,54 @@ const AdvancedSearchBar: React.FC<AdvancedSearchBarProps> = ({
         </select>
       </div>
 
-      {/* Area Dropdown */}
-      <div className="rmd-search-field-container">
-        <select value={area} onChange={(e) => setArea(e.target.value)} aria-label="Area">
-          <option value="">All Areas</option>
-          {areas.map(a => (
-            <option key={a} value={a}>{a}</option>
-          ))}
-        </select>
+      {/* Area Search Input with Custom Autocomplete */}
+      <div className="rmd-search-field-container" style={{position: 'relative'}} ref={areaRef}>
+        <MapPin size={16} className="rmd-input-icon" />
+        <input 
+            type="text" 
+            value={area} 
+            onChange={(e) => {
+                const val = e.target.value;
+                setArea(val);
+                setShowAreaDropdown(true); // Open on type
+                if (onAreaInputChange) onAreaInputChange(val);
+            }} 
+            placeholder="All Areas"
+            aria-label="Area"
+            className="rmd-search-input"
+            onFocus={() => {
+                setShowAreaDropdown(true); // Open on focus
+                if (onAreaInputChange && areas.length === 0) onAreaInputChange("");
+            }}
+        />
+        {/* Custom Dropdown for Areas */}
+        {showAreaDropdown && areas && areas.length > 0 && (
+            <div className="rmd-custom-dropdown-menu" style={{
+                maxHeight: '300px',
+                overflowY: 'auto',
+                top: '100%',
+                left: 0,
+                right: 0,
+                zIndex: 1000
+            }}>
+                {areas.map((a, index) => (
+                    <div 
+                        key={`${a}-${index}`} 
+                        className="rmd-dropdown-item"
+                        onClick={() => {
+                            console.log("Area Selected:", a); // DEBUG LOG
+                            setArea(a);
+                            setShowAreaDropdown(false); // Close on select
+                            // Trigger search immediately on selection
+                            onSearch({ specialty, city, area: a, type });
+                        }}
+                        style={{padding: '10px 15px', cursor: 'pointer', borderBottom: '1px solid #eee'}}
+                    >
+                        {a}
+                    </div>
+                ))}
+            </div>
+        )}
       </div>
 
       {/* Custom Category / Type Dropdown */}

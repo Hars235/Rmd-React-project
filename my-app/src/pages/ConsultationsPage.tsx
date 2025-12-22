@@ -142,6 +142,11 @@ const FreeConsultationEmptyState = ({ onAskClick }: { onAskClick: () => void }) 
 };
 
 const AskQuestionForm = ({ onBack }: { onBack: () => void }) => {
+    const handleSubmit = () => {
+        alert("Your free question has been sent to your doctor!");
+        onBack(); // Optional: Go back to the main list after submit
+    };
+
     return (
         <div className="ask-question-form">
             <div className="form-header">
@@ -149,7 +154,7 @@ const AskQuestionForm = ({ onBack }: { onBack: () => void }) => {
                     <ArrowLeft size={20} /> Back
                 </button>
                 <h3>Ask free question</h3>
-                <button className="submit-btn">SUBMIT</button>
+                <button className="submit-btn" onClick={handleSubmit}>SUBMIT</button>
             </div>
             
             <div className="form-group">
