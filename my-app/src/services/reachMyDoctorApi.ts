@@ -330,6 +330,7 @@ class ReachMyDoctorApi {
             method: "POST",
             headers: {
                 "accept": "application/json, text/javascript, */*; q=0.01",
+                "accept-language": "en-US,en;q=0.9,en-IN;q=0.8",
                 "content-type": "text/plain"
             },
             body: body
@@ -423,10 +424,12 @@ class ReachMyDoctorApi {
 
   static async getMapBasicDetails(specialization: string, city: string, locality: string, coordinates: Coordinates): Promise<BasicDoctorDetails[]> {
       try {
+        const formattedType = specialization === "Clinic" ? "Clinic:Clinic" : (specialization.includes(":") ? specialization : `doctor:${specialization}`);
+        
         const body = JSON.stringify({
-            type: specialization.includes(":") ? specialization : `doctor:${specialization}`,
+            type: formattedType,
             city: city,
-            locality: locality,
+            locality: "", // Force empty locality to use coordinate filtering
             lat1: coordinates.south.toString(),
             lat2: coordinates.west.toString(),
             lng1: coordinates.north.toString(),

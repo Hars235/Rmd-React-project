@@ -22,7 +22,7 @@ type Appointment = {
     date: string;
     time: string;
     patientName: string;
-    status: 'Attending' | 'Attended' | 'Attend Later' | 'Missed';
+    status: 'Attending' | 'Attended' | 'Attend Later' | 'Missed' | 'Later attending';
 };
 
 
@@ -46,6 +46,8 @@ type MockDoctor = {
   email?: string;
   website?: string;
   timings?: string;
+  lat?: string;
+  lng?: string;
   slots: { date: string; times: string[] }[];
 };
 
@@ -71,7 +73,9 @@ const MOCK_DOCTORS: MockDoctor[] = [
     slots: [
       { date: "Today", times: ["10:00 AM", "11:30 AM", "2:00 PM", "4:30 PM"] },
       { date: "Tomorrow", times: ["09:00 AM", "11:00 AM", "3:00 PM"] }
-    ]
+    ],
+    lat: "12.9345",
+    lng: "77.5345"
   },
   {
     id: 2,
@@ -91,7 +95,9 @@ const MOCK_DOCTORS: MockDoctor[] = [
     slots: [
       { date: "Today", times: ["05:00 PM", "06:30 PM", "08:00 PM"] },
       { date: "Tomorrow", times: ["10:30 AM", "12:30 PM", "05:30 PM"] }
-    ]
+    ],
+    lat: "12.9350",
+    lng: "77.5360"
   },
   {
     id: 3,
@@ -222,6 +228,40 @@ const FindDoctorsPage: React.FC = () => {
     const [activeDoctor, setActiveDoctor] = useState<ClinicListResponse | null>(null);
     // viewMapDoctor is for the 'View on Map' link from the list (shows modal)
     const [viewMapDoctor, setViewMapDoctor] = useState<ClinicListResponse | null>(null);
+
+    // -- Location & Distance State --
+    const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    setUserLocation({
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude
+                    });
+                },
+                (err) => console.error("Location access denied or failed", err)
+            );
+        }
+    }, []);
+
+    const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+        const R = 6371; // Radius of the earth in km
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const d = R * c; // Distance in km
+        return d;
+    };
+
+    const deg2rad = (deg: number) => {
+        return deg * (Math.PI / 180);
+    };
 
     // -- Helpers --
     const getCoordinatesForArea = (areaVal: string) => {
@@ -671,11 +711,58 @@ const FindDoctorsPage: React.FC = () => {
                             <div className="co-header-content">
                                 <span className="co-subtitle">Clinic</span>
                                 <h2 className="co-title">{overlayDoctor.name}</h2>
-                                <p className="co-location">{overlayDoctor.location}</p>
+                                <p className="co-location">{overlayDoctor.location || (overlayDoctor as any).locality}</p>
                             </div>
-                            <div className="co-distance-badge">
-                                📍 27.9 km
-                            </div>
+                            {(() => {
+                                // Extract lat/lng safely (API provides lat/lng strings, Mocks might not)
+                                const docLat = (overlayDoctor as any).lat ? parseFloat((overlayDoctor as any).lat) : 0;
+                                const docLng = (overlayDoctor as any).lng ? parseFloat((overlayDoctor as any).lng) : 0;
+                                
+                                if (userLocation && docLat && docLng) {
+                                    const dist = calculateDistance(userLocation.lat, userLocation.lng, docLat, docLng);
+                                    const etaMins = Math.round((dist * 60) / 30); // Approx 30km/h avg speed
+                                    return (
+                                        <div 
+                                            className="co-distance-badge" 
+                                            style={{cursor: 'pointer'}}
+                                            onClick={() => {
+                                                window.open(`https://www.google.com/maps/dir/?api=1&destination=${docLat},${docLng}`, '_blank');
+                                            }}
+                                            title="Click for Directions"
+                                        >
+                                            📍 {dist.toFixed(1)} km • ~{etaMins} mins
+                                        </div>
+                                    );
+                                } else if (docLat && docLng) {
+                                     // Just show Get Directions if user location unknown
+                                     return (
+                                        <div 
+                                            className="co-distance-badge" 
+                                            style={{cursor: 'pointer'}}
+                                            onClick={() => {
+                                                window.open(`https://www.google.com/maps/dir/?api=1&destination=${docLat},${docLng}`, '_blank');
+                                            }}
+                                        >
+                                            📍 Order: Get Directions
+                                        </div>
+                                     );
+                                } else {
+                                     // Fallback: No coords found. Allow search query.
+                                     return (
+                                        <div 
+                                            className="co-distance-badge"
+                                            style={{cursor: 'pointer'}}
+                                            onClick={() => {
+                                                const query = encodeURIComponent(`${overlayDoctor.name} ${overlayDoctor.location || ""}`);
+                                                window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+                                            }}
+                                            title="Search on Google Maps"
+                                        >
+                                            📍 View on Map
+                                        </div>
+                                     );
+                                }
+                            })()}
                         </div>
                         
                         {/* Action Bar */}
