@@ -10,6 +10,7 @@ import LabTestsPage from "./pages/LabTestsPage";
 import ProfilePage from "./pages/ProfilePage";
 import PhotoUploadPage from "./pages/PhotoUploadPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
+import ClinicLocationPage from './pages/ClinicLocationPage';
 import Sidebar from "./components/Sidebar";
 import ConsultationsPage from "./pages/ConsultationsPage";
 import MyAppointmentsPage from './pages/MyAppointmentsPage';
@@ -830,6 +831,7 @@ function MainHome({ name, profileData, updateProfileField, completionPercent }: 
       <Route path="/appointments" element={<AppointmentsPage />} />
       <Route path="/consultations" element={<ConsultationsPage />} />
       <Route path="/my-appointments" element={<MyAppointmentsPage />} />
+      <Route path="/clinic-location" element={<ClinicLocationPage />} />
     </Routes>
   );
 };

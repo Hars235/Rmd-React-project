@@ -35,7 +35,7 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onClose, userName, completionPercen
   // Navigation Items (Rich Icons) - Matches uploaded screenshots
   const menuItems = [
     { icon: <div className="icon-box blue"><FileText size={20} /></div>, label: "ABHA", path: "/abha" },
-    { icon: <div className="icon-box blue"><Calendar size={20} /></div>, label: "Appointments", path: "/appointments" },
+    { icon: <div className="icon-box blue"><Calendar size={20} /></div>, label: "Appointments", path: "/my-appointments" },
     { icon: <div className="icon-box blue"><FlaskConical size={20} /></div>, label: "Test Bookings", path: "/lab-tests" },
     { icon: <div className="icon-box blue"><Pill size={20} /></div>, label: "Orders", path: "/orders" },
     { icon: <div className="icon-box blue"><MessageSquare size={20} /></div>, label: "Consultations", path: "/consultations" },

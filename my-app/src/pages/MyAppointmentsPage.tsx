@@ -1,111 +1,133 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../App.css';
+import { Calendar, MapPin, Clock, User, CheckCircle } from 'lucide-react';
+import './MyAppointmentsPage.css';
 
-// Reuse types (should ideally be shared)
-type Doctor = {
-  id: number;
-  name: string;
-  specialty: string;
-  experience: string;
-  location: string;
-  clinic: string;
-  fee: string;
-  availability: string;
-  image: string;
-  slots: { date: string; times: string[] }[];
-};
-
-type BookingSlot = {
-  date: string;
-  time: string;
-};
-
-type Booking = {
-  id: number;
-  doctor: Doctor;
-  slot: BookingSlot;
-  patientName: string;
-  bookedOn: string;
+type Appointment = {
+    id: number;
+    doctorName: string;
+    specialty: string;
+    clinic: string;
+    location: string;
+    date: string;
+    time: string;
+    patientName: string;
+    status: 'Attending' | 'Attended' | 'Attend Later' | 'Missed';
 };
 
 const MyAppointmentsPage: React.FC = () => {
-  const navigate = useNavigate();
-  const [bookings, setBookings] = useState<Booking[]>([]);
+    const [appointments, setAppointments] = useState<Appointment[]>([]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('RMD_APPOINTMENTS');
-    if (saved) {
-      setBookings(JSON.parse(saved).reverse()); // Newest first
-    }
-  }, []);
+    useEffect(() => {
+        const stored = localStorage.getItem('appointments');
+        if (stored) {
+            try {
+                // Reverse to show newest booking first
+                setAppointments(JSON.parse(stored).reverse());
+            } catch (e) {
+                console.error("Failed to parse appointments", e);
+            }
+        }
+    }, []);
 
-  return (
-    <div className="rmd-page">
-      <main className="rmd-main" style={{paddingTop: '20px'}}>
-        <section className="rmd-section">
-          <h2>My Appointments</h2>
-          <p className="rmd-section-sub">Your scheduled consultations</p>
+    const updateStatus = (id: number, newStatus: Appointment['status']) => {
+        const updated = appointments.map(app => 
+            app.id === id ? { ...app, status: newStatus } : app
+        );
+        setAppointments(updated);
+        // Save back reversed (or handle the order correctly)
+        // Since we read reversed, we should probably un-reverse before saving if we care about append order? 
+        // Or just save this list. Saving this list means next load will reverse again.
+        // Better: Find the item in the original storage? 
+        // Simplest: Just save the current list.
+        localStorage.setItem('appointments', JSON.stringify(updated.slice().reverse())); 
+    };
 
-          {bookings.length === 0 ? (
-            <div style={{
-              textAlign: 'center', 
-              padding: '60px', 
-              background: 'white', 
-              borderRadius: '12px',
-              border: '1px solid #e2e8f0'
-            }}>
-              <div style={{fontSize: '48px', marginBottom: '16px'}}>📅</div>
-              <h3 style={{color: '#334155', marginBottom: '8px'}}>No Appointments Yet</h3>
-              <p style={{color: '#64748b', marginBottom: '24px'}}>Find a doctor and book your first consultation.</p>
-              <button className="btn-primary" onClick={() => navigate('/appointments')}>Book an Appointment</button>
-            </div>
-          ) : (
-            <div className="doctor-list">
-              {bookings.map(booking => (
-                <div key={booking.id} className="doctor-card" style={{borderLeft: '4px solid #10b981'}}>
-                  <div className="doctor-info">
-                    <div className="doctor-img-wrapper">
-                      <img src={booking.doctor.image} alt={booking.doctor.name} />
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case 'Attending': return 'status-attending';
+            case 'Attended': return 'status-attended';
+            case 'Attend Later': return 'status-later';
+            case 'Missed': return 'status-missed';
+            default: return '';
+        }
+    };
+
+    return (
+        <div className="history-container">
+            <header className="history-header">
+                <h1>Appointment Booked History</h1>
+                <p>Manage your booked appointments and track their status.</p>
+            </header>
+
+            <div className="history-content">
+                <div className="status-summary">
+                    <div className="summary-card">
+                        <h3>Total Booked</h3>
+                        <div className="count">{appointments.length}</div>
                     </div>
-                    <div className="doctor-details">
-                      <h3>{booking.doctor.name}</h3>
-                      <p className="doc-specialty">{booking.doctor.specialty}</p>
-                      <p className="doc-loc"><strong>{booking.doctor.clinic}</strong> • {booking.doctor.location}</p>
-                      
-                      <div style={{marginTop: '12px', padding: '12px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #bbf7d0'}}>
-                        <div style={{display: 'flex', gap: '20px', marginBottom: '4px'}}>
-                            <div>
-                                <span style={{fontSize: '12px', color: '#166534', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Date & Time</span>
-                                <span style={{color: '#15803d', fontWeight: 500}}>{booking.slot.date} at {booking.slot.time}</span>
-                            </div>
-                            <div>
-                                <span style={{fontSize: '12px', color: '#166534', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Patient</span>
-                                <span style={{color: '#15803d', fontWeight: 500}}>{booking.patientName}</span>
-                            </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="doctor-actions" style={{justifyContent: 'flex-start'}}>
-                    <button className="btn-secondary" style={{
-                      background: '#dcfce7', 
-                      color: '#15803d', 
-                      border: 'none',
-                      cursor: 'default',
-                      fontWeight: 600
-                    }}>
-                      ✓ Confirmed
-                    </button>
-                  </div>
                 </div>
-              ))}
+
+                <div className="appointments-list">
+                    {appointments.length === 0 ? (
+                        <div className="no-history">
+                            <Calendar size={48} color="#cbd5e1" />
+                            <p>No appointments found.</p>
+                        </div>
+                    ) : (
+                        appointments.map(app => (
+                            <div key={app.id} className="history-card">
+                                <div className="card-header">
+                                    <div>
+                                        <h2>{app.doctorName}</h2>
+                                        <div className="specialty">{app.specialty}</div>
+                                    </div>
+                                    <div className="status-control">
+                                        <select 
+                                            value={app.status || 'Attending'} 
+                                            onChange={(e) => updateStatus(app.id, e.target.value as any)}
+                                            className={`status-select ${getStatusColor(app.status || 'Attending')}`}
+                                        >
+                                            <option value="Attending">Attending</option>
+                                            <option value="Attended">Attended</option>
+                                            <option value="Attend Later">Attend Later</option>
+                                            <option value="Missed">Missed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div className="card-body">
+                                    <div className="info-row">
+                                        <div className="info-item">
+                                            <CheckCircle size={16} className="icon" />
+                                            <span>{app.clinic}</span>
+                                        </div>
+                                        <div className="info-item">
+                                            <MapPin size={16} className="icon" />
+                                            <span>{app.location}</span>
+                                        </div>
+                                    </div>
+                                    <div className="info-row">
+                                        <div className="info-item">
+                                            <Calendar size={16} className="icon" />
+                                            <span>{app.date}</span>
+                                        </div>
+                                        <div className="info-item">
+                                            <Clock size={16} className="icon" />
+                                            <span>{app.time}</span>
+                                        </div>
+                                    </div>
+                                    <div className="patient-info">
+                                        <User size={16} className="icon" />
+                                        <span>Patient: {app.patientName}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
             </div>
-          )}
-        </section>
-      </main>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default MyAppointmentsPage;

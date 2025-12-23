@@ -16,7 +16,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import './AppointmentsPage.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Doctor, BookingSlot, MOCK_DOCTORS, LOGO_URL } from '../data/mockData';
 import AdvancedSearchBar from '../components/AdvancedSearchBar';
 import ReachMyDoctorApi from '../services/reachMyDoctorApi';
@@ -45,6 +45,9 @@ const AppointmentsPage: React.FC = () => {
   const [patientName, setPatientName] = useState("");
   const [isBooked, setIsBooked] = useState(false);
   const [viewMapDoctor, setViewMapDoctor] = useState<Doctor | null>(null);
+  // const [apiSlots, setApiSlots] = useState<any[]>([]);
+
+  const location = useLocation();
 
   // -- Fetch Areas Logic --
   const fetchAreas = useCallback(async (query: string) => {
@@ -122,6 +125,89 @@ const AppointmentsPage: React.FC = () => {
   }, [selectedSpecialty, searchTerm, area]);
 
   /* Booking Logic */
+  
+  // Handle incoming navigation from FindDoctorsPage
+  useEffect(() => {
+     if (location.state && location.state.doctorId) {
+         const { doctorId, doctorName, preSelectedSlot } = location.state;
+         
+         // Create a temporary doctor object to open the modal
+         setBookingDoctor({
+             id: doctorId,
+             name: doctorName || "Doctor",
+             specialty: "Specialist", // Placeholder
+             clinic: "Clinic", // Placeholder
+             location: city,
+             image: "https://reachmydoctor.in/pages/images/icons/stethoscope.png", // Default
+             experience: "",
+             fee: "",
+             availability: "",
+             slots: [] // Will be populated by API
+         });
+
+         // If a slot was already picked, set it
+         if (preSelectedSlot) {
+             setBookingSlot({
+                 date: new Date().toLocaleDateString(),
+                 time: preSelectedSlot
+             });
+         }
+     }
+  }, [location.state, city]);
+
+  // Fetch Slots when booking doctor is set (and has an ID)
+  useEffect(() => {
+      const fetchSlots = async () => {
+          if (bookingDoctor && bookingDoctor.id) {
+             console.log("Fetching slots for doctor:", bookingDoctor.id);
+             let slotsData: any[] = [];
+             
+             try {
+                 const response = await ReachMyDoctorApi.getClinicSlots(String(bookingDoctor.id), new Date().toISOString().split('T')[0]);
+                 console.log("Slots Response:", response);
+                 
+                 // Adapt API response to UI format
+                 if (response && response.RESPONSE === "SUCCESS") {
+                     slotsData = response.SLOTS || response.data || []; 
+                 }
+             } catch (err) {
+                 console.error("Failed to fetch slots", err);
+             }
+
+             // Independent Fallback (Always runs if slotsData is empty)
+             if (!slotsData || slotsData.length === 0) {
+                 console.log("Using Mock Slots Fallback");
+                 slotsData = ["10:00 am", "10:30 am", "11:00 am", "11:30 am", "04:00 pm", "04:30 pm", "05:00 pm"];
+             }
+
+             // setApiSlots(slotsData); // Store raw for reference if needed
+             
+             // If slotsData is a flat array of strings ["10:00", ...], map to today
+             if (Array.isArray(slotsData) && typeof slotsData[0] === 'string') {
+                 setBookingDoctor(prev => prev ? ({
+                     ...prev,
+                     slots: [{
+                         date: new Date().toLocaleDateString(),
+                         times: slotsData
+                     }]
+                 }) : null);
+             } 
+             // If it's already structured, use as is (with validation)
+             else if (Array.isArray(slotsData)) {
+                  // Assume it matches DaySlot or map it
+                  setBookingDoctor(prev => prev ? ({
+                      ...prev,
+                      slots: slotsData
+                  }) : null);
+             }
+          }
+      };
+      
+      fetchSlots();
+      // eslint-disable-next-line
+  }, [bookingDoctor?.id]); 
+
+
   const handleBookClick = (doctor: Doctor) => {
     setBookingDoctor(doctor);
     setBookingSlot(null);
@@ -154,7 +240,8 @@ const AppointmentsPage: React.FC = () => {
 
   return (
     <div className="appointments-page">
-      {!selectedSpecialty && filteredDoctors.length === 0 ? (
+      {/* Mock Data Frozen/Hidden by default unless specific search/action */}
+      {false && !selectedSpecialty && filteredDoctors.length === 0 ? (
         <>
           <div className="appointments-header">
             <h1>Book an Appointment</h1>

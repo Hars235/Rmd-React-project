@@ -151,6 +151,16 @@ export interface ClinicDetails {
   };
 }
 
+export interface DoctorSlot {
+  time: string;
+  status?: string; 
+}
+
+export interface ClinicSlotResponse {
+  period: string;
+  slots: DoctorSlot[];
+}
+
 class ReachMyDoctorApi {
   private static authToken: string | null = null;
 
@@ -468,8 +478,27 @@ class ReachMyDoctorApi {
     });
   }
 
-  static async getClinicSlots(id: string, date: string) {
-    return this.request("v1/verified/get_clinic_slots", { id, date });
+  static async getClinicSlots(id: string, _date: string) {
+    try {
+        // User snippet only sends id in body, ignoring date for now as per specific request snippet
+        const body = JSON.stringify({
+            id: id
+        });
+
+        const response = await fetch("https://reachmydoctor.in/api/v1/verified/get_clinic_slots", {
+            method: "POST",
+            headers: {
+                "accept": "application/json, text/javascript, */*; q=0.01",
+                "content-type": "text/plain"
+            },
+            body: body
+        });
+
+        return await response.json();
+    } catch (err) {
+        console.error("getClinicSlots failed", err);
+        return { RESPONSE: "FAILURE" };
+    }
   }
 
   /*

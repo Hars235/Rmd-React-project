@@ -22,6 +22,7 @@ interface MapProps {
       name: string;
       type?: string;
   }>;
+  onMarkerClick?: (id: string) => void;
 }
 
 const RecenterOne = ({ center, zoom }: { center: { lat: number; lng: number }, zoom: number }) => {
@@ -32,11 +33,21 @@ const RecenterOne = ({ center, zoom }: { center: { lat: number; lng: number }, z
     return null;
 };
 
-const MapComponent: React.FC<MapProps> = ({ center, zoom = 13, activeLocation, locations = [] }) => {
-  // Combine single active location logic with multiple locations if needed
-  // If we have a list, we show all. If activeLocation is set, we might highlight it or just center on it.
-  
+const MapComponent: React.FC<MapProps> = ({ center, zoom = 13, activeLocation, locations = [], onMarkerClick }) => {
   const defaultCenter = { lat: 12.9716, lng: 77.5946 }; // Bengaluru Default
+
+  // RMD Logo Marker Icon
+  // RMD Logo Marker Icon
+  // RMD Logo Marker Icon
+  const customIcon = new L.Icon({
+      iconUrl: '/images/rmd-pin.png', // New vertical pin image
+      iconSize: [50, 70], // Vertical pin dimensions (adjust based on actual ratio, 5:7 approx)
+      iconAnchor: [25, 70], // Bottom center tip
+      popupAnchor: [0, -70], // Popup above the pin
+      properties: {
+        className: 'rmd-custom-marker'
+      }
+  });
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative', zIndex: 0 }}>
@@ -53,7 +64,16 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom = 13, activeLocation, l
         <RecenterOne center={center} zoom={zoom} />
 
         {locations.map(loc => (
-            <Marker key={loc.id} position={[loc.lat, loc.lng]}>
+            <Marker 
+                key={loc.id} 
+                position={[loc.lat, loc.lng]}
+                icon={customIcon}
+                eventHandlers={{
+                    click: () => {
+                        if (onMarkerClick) onMarkerClick(loc.id);
+                    }
+                }}
+            >
                 <Popup>
                     <strong>{loc.name}</strong><br />
                     {loc.type}
@@ -63,7 +83,7 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom = 13, activeLocation, l
 
         {/* Fallback or specific active marker if not in list */}
         {activeLocation && !locations.find(l => l.lat === activeLocation.lat && l.lng === activeLocation.lng) && (
-            <Marker position={[activeLocation.lat, activeLocation.lng]}>
+            <Marker position={[activeLocation.lat, activeLocation.lng]} icon={customIcon}>
                 <Popup>
                     <strong>{activeLocation.name}</strong>
                 </Popup>
