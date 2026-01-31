@@ -4,21 +4,46 @@
     padding: 24px;
     font-family: 'Inter', sans-serif;
     color: #334155;
+    position: relative; /* For toast positioning if we wanted absolute, but fixed is better */
 }
 
 .history-header {
     margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
-.history-header h1 {
+.history-header-content h1 {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 8px;
     color: #1e293b;
+    margin-top: 0;
 }
 
-.history-header p {
+.history-header-content p {
     color: #64748b;
+    margin: 0;
+}
+
+.delete-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.delete-btn:hover {
+    background-color: #fecaca;
+    transform: translateY(-1px);
 }
 
 .status-summary {
@@ -63,10 +88,25 @@
     border: 1px solid #e2e8f0;
     padding: 24px;
     transition: box-shadow 0.2s;
+    position: relative;
+    padding-left: 60px; /* Space for checkbox */
 }
 
 .history-card:hover {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.card-select-container {
+    position: absolute;
+    left: 20px;
+    top: 24px;
+}
+
+.card-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #3b82f6;
 }
 
 .card-header {
@@ -170,4 +210,51 @@
     align-items: center;
     gap: 16px;
     color: #94a3b8;
+}
+
+/* Toast Notification */
+.undo-toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.undo-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.undo-btn:hover {
+    background: rgba(255,255,255,0.1);
 }

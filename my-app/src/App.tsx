@@ -1,6 +1,6 @@
 import React, { useEffect, useState, type FormEvent } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { Menu, Search } from "lucide-react";
+import { Menu } from "lucide-react";
 import "./App.css";
 import VideoConsultPage from "./pages/VideoConsultPage";
 import SurgeriesPage from "./pages/SurgeriesPage";
@@ -91,9 +91,20 @@ const INITIAL_PROFILE_DATA: ProfileData = {
 interface TopNavProps {
   userName?: string;
   completionPercent?: number;
+  showSearch?: boolean;
+  searchValue?: string;
+  onSearchChange?: (val: string) => void;
+  onSearchSubmit?: (e: React.FormEvent) => void;
 }
 
-const TopNav: React.FC<TopNavProps> = ({ userName, completionPercent = 0 }) => {
+const TopNav: React.FC<TopNavProps> = ({ 
+  userName, 
+  completionPercent = 0,
+  showSearch,
+  searchValue,
+  onSearchChange,
+  onSearchSubmit
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -138,6 +149,21 @@ const TopNav: React.FC<TopNavProps> = ({ userName, completionPercent = 0 }) => {
               style={{ cursor: "pointer" }}
             />
           </div>
+
+          {showSearch && (
+            <div className="rmd-topbar-search">
+              <form className="rmd-header-search-form" onSubmit={onSearchSubmit}>
+                <span className="rmd-header-search-icon">🔍</span>
+                <input 
+                  type="text" 
+                  className="rmd-header-input" 
+                  placeholder="Search doctors, clinics, hospitals, etc."
+                  value={searchValue}
+                  onChange={(e) => onSearchChange?.(e.target.value)}
+                />
+              </form>
+            </div>
+          )}
 
           <nav className="rmd-nav" aria-label="Main navigation">
             <div className="rmd-nav-group">
@@ -565,7 +591,7 @@ export default App;
 /* ================= Dashboard Content ================= */
 function DashboardHome({ name, profileData, completionPercent }: { name: string; profileData: ProfileData; completionPercent: number }) {
   const navigate = useNavigate();
-  const [city, setCity] = useState("Bangalore");
+  const [city] = useState("Bangalore");
 
   const [query, setQuery] = useState("");
   const [activeArticle] = useState<ArticleCard | null>(null);
@@ -573,12 +599,6 @@ function DashboardHome({ name, profileData, completionPercent }: { name: string;
   const [mapOpen, setMapOpen] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [filteredDoctors, setFilteredDoctors] = useState<DoctorResult[]>([]);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-
-  const popularSpecialties = [
-    "Dentist", "Gynecologist/Obstetrician", "General Physician", "Dermatologist",
-    "Ear-nose-throat (ENT) Specialist", "Homoeopath", "Ayurveda"
-  ];
 
 
 
@@ -610,68 +630,65 @@ function DashboardHome({ name, profileData, completionPercent }: { name: string;
 
   const handleSearchSubmit = (e: FormEvent) => { e.preventDefault(); handleSearch(); };
 
+  /* Carousel State */
+  const sliderImages = [
+    "/images/slider/slide1.png",
+    "/images/slider/slide2.png",
+    "/images/slider/slide3.png",
+    "/images/slider/slide4.png",
+    "/images/slider/slide5.png"
+  ];
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   /* Default Home UI */
   return (
     <div className="rmd-page">
-      <TopNav userName={name || profileData.userName} completionPercent={completionPercent} />
+      <TopNav 
+        userName={name || profileData.userName} 
+        completionPercent={completionPercent}
+        showSearch={true}
+        searchValue={query}
+        onSearchChange={setQuery}
+        onSearchSubmit={handleSearchSubmit}
+      />
 
-      {/* HERO */}
-      <section className="rmd-hero" style={{ backgroundImage: `url('${BG_IMAGE_URL}')` }}>
-        <div className="rmd-hero-overlay" />
+      {/* HERO with Slider */}
+      <section className="rmd-hero" style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Sliding Background */}
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          width: '100%', 
+          height: '100%', 
+          display: 'flex', 
+          transition: 'transform 0.8s ease-in-out', 
+          transform: `translateX(-${currentSlide * 100}%)`, 
+          zIndex: 0 
+        }}>
+           {sliderImages.map((img, idx) => (
+             <img 
+               key={idx} 
+               src={img} 
+               alt={`Banner ${idx+1}`} 
+               style={{ width: '100%', height: '100%', objectFit: 'fill', flexShrink: 0 }} 
+             />
+           ))}
+        </div>
+
+        <div className="rmd-hero-overlay" style={{ zIndex: 1 }} />
         <div className="rmd-hero-inner">
-          <div className="rmd-hero-text">
-            <p className="rmd-hero-hi">Hi {name.trim() ? name : "there"},</p>
-            <h1 className="rmd-hero-title">Find and consult doctors anytime, anywhere</h1>
-            <p className="rmd-hero-sub">Book appointments, consult online, and access trusted health services in one place.</p>
-          </div>
-
-          <form className="rmd-search-panel" onSubmit={handleSearchSubmit}>
-            <div className="rmd-input rmd-location">
-              <span className="rmd-input-icon">📍</span>
-              <select value={city} onChange={(e) => setCity(e.target.value)} aria-label="Select city">
-                <option value="Bangalore">Bangalore</option>
-                <option value="Hyderabad">Hyderabad</option>
-                <option value="Chennai">Chennai</option>
-                <option value="Mumbai">Mumbai</option>
-              </select>
-            </div>
-
-            <div className="rmd-input rmd-query">
-              <span className="rmd-input-icon">🔍</span>
-              <input
-                type="text"
-                placeholder="Search doctors, clinics, hospitals, etc."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-              />
-            </div>
-
-            {isSearchFocused && (
-              <div className="rmd-search-dropdown">
-                {popularSpecialties.map((spec) => (
-                  <div
-                    key={spec}
-                    className="search-suggestion-item"
-                    onMouseDown={(e) => {
-                      e.preventDefault(); // Prevent blur before click registers
-                      setQuery(spec);
-                      setIsSearchFocused(false);
-                    }}
-                  >
-                    <div className="suggestion-left">
-                      <span className="suggestion-icon"><Search size={16} /></span>
-                      <span>{spec}</span>
-                    </div>
-                    <span className="suggestion-tag">SPECIALITY</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </form>
+           {/* Text and Search removed as per request */}
         </div>
       </section>
+
 
       {/* MAIN */}
       <main className="rmd-main">

@@ -7,30 +7,33 @@ import AdvancedSearchBar from '../components/AdvancedSearchBar';
 import MapComponent from '../components/MapComponent';
 import ReachMyDoctorApi, { ClinicListResponse } from '../services/reachMyDoctorApi';
 
-// Types
+/* ================= TYPES ================= */
+
 type BookingSlot = {
   date: string;
   time: string;
 };
 
+type AppointmentStatus =
+  | 'Attending'
+  | 'Attended'
+  | 'Attend Later'
+  | 'Missed'
+  | 'Later attending';
+
 type Appointment = {
-    id: number;
-    doctorName: string;
-    specialty: string;
-    clinic: string;
-    location: string;
-    date: string;
-    time: string;
-    patientName: string;
-    status: 'Attending' | 'Attended' | 'Attend Later' | 'Missed' | 'Later attending';
+  id: number;
+  doctorName: string;
+  specialty: string;
+  clinic: string;
+  location: string;
+  date: string;
+  time: string;
+  patientName: string;
+  status: AppointmentStatus;
+  bookingDate?: string; // Date when the booking was made
 };
 
-
-// ... existing code ...
-
-
-
-// Local Doctor Type for Mock Data (slightly different from API response, so we map it)
 type MockDoctor = {
   id: number;
   name: string;
@@ -38,7 +41,7 @@ type MockDoctor = {
   experience: string;
   location: string;
   clinic: string;
-  clinicAddress?: string; // Detailed address
+  clinicAddress?: string;
   fee: string;
   availability: string;
   image: string;
@@ -51,7 +54,6 @@ type MockDoctor = {
   slots: { date: string; times: string[] }[];
 };
 
-// Logo URL for the map marker
 const LOGO_URL = "/images/consult/logo.png";
 
 const MOCK_DOCTORS: MockDoctor[] = [
@@ -192,16 +194,18 @@ const MOCK_DOCTORS: MockDoctor[] = [
   }
 ];
 
+/* ================= COMPONENT ================= */
+
 const FindDoctorsPage: React.FC = () => {
     const location = useLocation();
 
     // -- Search State --
-    const [city, setCity] = useState("Bengaluru"); // Default to strict API name
+    const [city, setCity] = useState("Bengaluru");
     const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(() => {
         return new URLSearchParams(location.search).get('category') || null;
     });
     const [area, setArea] = useState("");
-    const [type, setType] = useState("Clinic"); // Default type
+    const [type, setType] = useState("Clinic");
     
     // Booking State
     const [bookingDoctor, setBookingDoctor] = useState<MockDoctor | null>(null);
@@ -212,8 +216,7 @@ const FindDoctorsPage: React.FC = () => {
     const [myAppointments, setMyAppointments] = useState<Appointment[]>([]);
     const [showAppointments, setShowAppointments] = useState(false);
 
-    // -- Overlay State (New) --
-    // Tracks matched MockDoctor for detailed overlay
+    // -- Overlay State --
     const [overlayDoctor, setOverlayDoctor] = useState<MockDoctor | null>(null);
 
     // -- Data State --
@@ -223,10 +226,10 @@ const FindDoctorsPage: React.FC = () => {
     const [availableAreas, setAvailableAreas] = useState<string[]>([]);
     
     // -- Map State --
-    const [mapCenter, setMapCenter] = useState({ lat: 12.9716, lng: 77.5946 }); // Default Bangalore
-    // activeDoctor is for the Map Pin click
+    const [mapCenter, setMapCenter] = useState({ lat: 12.9716, lng: 77.5946 });
+    const [currentBounds, setCurrentBounds] = useState<{ south: number; west: number; north: number; east: number } | null>(null);
     const [activeDoctor, setActiveDoctor] = useState<ClinicListResponse | null>(null);
-    // viewMapDoctor is for the 'View on Map' link from the list (shows modal)
+    const [mapSelectedDoctorId, setMapSelectedDoctorId] = useState<string | null>(null);
     const [viewMapDoctor, setViewMapDoctor] = useState<ClinicListResponse | null>(null);
 
     // -- Location & Distance State --
@@ -246,6 +249,9 @@ const FindDoctorsPage: React.FC = () => {
         }
     }, []);
 
+    // -- Helpers --
+    const deg2rad = (deg: number) => deg * (Math.PI / 180);
+
     const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
         const R = 6371; // Radius of the earth in km
         const dLat = deg2rad(lat2 - lat1);
@@ -259,11 +265,6 @@ const FindDoctorsPage: React.FC = () => {
         return d;
     };
 
-    const deg2rad = (deg: number) => {
-        return deg * (Math.PI / 180);
-    };
-
-    // -- Helpers --
     const getCoordinatesForArea = (areaVal: string) => {
         const a = (areaVal || "").toLowerCase();
         if (a.includes("banashankari")) {
@@ -278,6 +279,45 @@ const FindDoctorsPage: React.FC = () => {
         return null;
     };
 
+    const getCityBounds = (cityVal: string) => {
+        const c = (cityVal || "Bengaluru").toLowerCase();
+        if (c.includes("hyd")) {
+            return { south: 17.1, west: 78.2, north: 17.6, east: 78.7 };
+        }
+        // Default Bengaluru
+        return { south: 12.8, west: 77.4, north: 13.2, east: 77.8 };
+    };
+
+    const calculateBoundsFromDoctors = (docs: ClinicListResponse[]) => {
+        if (docs.length === 0) return null;
+        let south = 90, west = 180, north = -90, east = -180;
+        let valid = false;
+
+        docs.forEach(d => {
+            const lat = parseFloat(d.lat);
+            const lng = parseFloat(d.lng);
+            if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
+                if (lat < south) south = lat;
+                if (lat > north) north = lat;
+                if (lng < west) west = lng;
+                if (lng > east) east = lng;
+                valid = true;
+            }
+        });
+
+        if (!valid) return null;
+
+        const padLat = (north - south) * 0.1 || 0.01;
+        const padLng = (east - west) * 0.1 || 0.01;
+
+        return {
+            south: south - padLat,
+            north: north + padLat,
+            west: west - padLng,
+            east: east + padLng
+        };
+    };
+
     const normalizeSearchTerm = (term: string | null): string => {
         if (!term) return "";
         const lower = term.toLowerCase();
@@ -289,28 +329,11 @@ const FindDoctorsPage: React.FC = () => {
         if (lower.includes("orthopedic")) return "Orthopedic";
         if (lower.includes("cardiologist")) return "Cardiologist";
         if (lower.includes("dentist")) return "Dentist";
+        
         return term.charAt(0).toUpperCase() + term.slice(1);
     };
 
-    const mapMockToClinic = (mockDoc: MockDoctor): ClinicListResponse => {
-        const parts = mockDoc.location.split(',');
-        const loc = parts[0] ? parts[0].trim() : "";
-        const cityVal = parts[1] ? parts[1].trim() : "Bengaluru";
-        
-        return {
-            id: String(mockDoc.id),
-            name: mockDoc.name,
-            address: mockDoc.clinic,
-            city: cityVal,
-            locality: loc,
-            lat: "12.9716", 
-            lng: "77.5946",
-            logo: mockDoc.image,
-            specializations: mockDoc.specialty
-        };
-    };
-
-    // -- Fetch Areas Logic (Debounced) --
+    // -- Fetch Areas Logic --
     const fetchAreas = useCallback(async (query: string) => {
         if (!city) return;
         try {
@@ -335,29 +358,28 @@ const FindDoctorsPage: React.FC = () => {
         return () => clearTimeout(timeoutId);
     }, [area, fetchAreas]);
 
+    // Force re-fetch trigger
+    const [searchTrigger, setSearchTrigger] = useState(0);
 
-    // -- Fetch Data Effect --
+    // -- Fetch Doctors Logic --
     useEffect(() => {
         const fetchData = async () => {
              setLoading(true);
              setError(null);
              try {
-                 const rawType = selectedSpecialty || type || "Doctor"; 
+                 const rawType = type || selectedSpecialty || "Doctor"; 
                  const searchType = normalizeSearchTerm(rawType); 
                  const searchArea = (area === "All Areas" || area === "") ? "" : area;
                  
-                 console.log(`[FindDoctorsPage] Fetching clinics: Type=${searchType}, City=${city}, Area=${searchArea}`);
                  let results: ClinicListResponse[] = [];
                  
                  try {
-                     const defaultCoords = getCoordinatesForArea(searchArea);
-                     
-                     if (defaultCoords) {
+                     if (currentBounds) {
                          const mapDetails = await ReachMyDoctorApi.getMapBasicDetails(
                              searchType, 
                              city, 
-                             searchArea, 
-                             defaultCoords 
+                             "", 
+                             currentBounds 
                          );
                          
                          if (mapDetails.length > 0) {
@@ -366,47 +388,76 @@ const FindDoctorsPage: React.FC = () => {
                                 name: d.name,
                                 address: d.city, 
                                 city: d.city,
-                                locality: searchArea || d.city, // We trust the area if we used coordinates
+                                locality: d.name.includes(",") ? d.name.split(",")[1] : d.city,
                                 lat: d.lat,
                                 lng: d.lng,
                                 logo: d.icon,
                                 specializations: d.timingStatus || searchType 
                             }));
                          }
-                     }
+                     } 
                      
                      if (results.length === 0) {
-                         console.log("No Map Details (or unknown area), using getClinicsList");
-                         results = await ReachMyDoctorApi.getClinicsList(searchType, city, searchArea);
+                         const defaultCoords = getCoordinatesForArea(searchArea);
+                         if (defaultCoords) {
+                             const mapDetails = await ReachMyDoctorApi.getMapBasicDetails(
+                                 searchType, 
+                                 city, 
+                                 searchArea, 
+                                 defaultCoords 
+                             );
+                             if (mapDetails.length > 0) {
+                                results = mapDetails.map(d => ({
+                                    id: d.id,
+                                    name: d.name,
+                                    address: d.city, 
+                                    city: d.city,
+                                    locality: searchArea || d.city,
+                                    lat: d.lat,
+                                    lng: d.lng,
+                                    logo: d.icon,
+                                    specializations: d.timingStatus || searchType 
+                                }));
+                                if (searchArea && searchArea !== "All Areas") {
+                                    setCurrentBounds(defaultCoords);
+                                }
+                             }
+                         } else if (searchArea && searchArea !== "All Areas") {
+                             const cityBounds = getCityBounds(city);
+                             const mapDetails = await ReachMyDoctorApi.getMapBasicDetails(
+                                 searchType,
+                                 city,
+                                 searchArea,
+                                 cityBounds
+                             );
+
+                             if (mapDetails.length > 0) {
+                                 results = mapDetails.map(d => ({
+                                    id: d.id,
+                                    name: d.name,
+                                    address: d.city, 
+                                    city: d.city,
+                                    locality: searchArea,
+                                    lat: d.lat,
+                                    lng: d.lng,
+                                    logo: d.icon,
+                                    specializations: d.timingStatus || searchType 
+                                }));
+                                
+                                const newBounds = calculateBoundsFromDoctors(results);
+                                if (newBounds) {
+                                    setCurrentBounds(newBounds);
+                                }
+                             }
+                         }
                      }
-                     
                  } catch (apiErr) {
                      console.warn("API failed, falling back to local data", apiErr);
                  }
 
-                 if (results.length === 0) {
-                     console.log("Using Local Mock Data Fallback");
-                     const mockResults = MOCK_DOCTORS.filter(d => {
-                         const cityLower = city.toLowerCase();
-                         const docLoc = d.location.toLowerCase();
-                         const matchCity = docLoc.includes(cityLower) || 
-                                         (cityLower === "bengaluru" && docLoc.includes("bangalore"));
-                         const matchSpecialty = searchType ? d.specialty.toLowerCase().includes(searchType.toLowerCase()) : true;
-                         // Add Area Filter for Mocks
-                         const matchArea = searchArea ? docLoc.includes(searchArea.toLowerCase()) : true;
-                         
-                         return matchCity && matchSpecialty && matchArea;
-                     });
-                     
-                     if (mockResults.length > 0) {
-                         results = mockResults.map(mapMockToClinic);
-                     }
-                 }
-
-                 console.log("Final Clinics result:", results);
                  setDoctors(results);
                  
-                 if (results.length > 0) {
+                 if (results.length > 0 && !currentBounds) {
                       const first = results[0];
                       if (first.lat && first.lng) {
                           setMapCenter({ lat: parseFloat(first.lat), lng: parseFloat(first.lng) });
@@ -426,10 +477,30 @@ const FindDoctorsPage: React.FC = () => {
         }, 500); 
 
         return () => clearTimeout(timeoutId);
-    }, [city, selectedSpecialty, area, type]);
-
+    }, [city, selectedSpecialty, area, type, currentBounds, searchTrigger]);
 
     // -- Handlers --
+    const handleMarkerClick = useCallback((id: string) => {
+        setMapSelectedDoctorId(id);
+        const doc = doctors.find(d => d.id === id);
+        if (doc) {
+            setActiveDoctor(doc);
+        }
+    }, [doctors]);
+
+    const handleBoundsChange = useCallback((bounds: { south: number; west: number; north: number; east: number }) => {
+        setCurrentBounds(prev => {
+             if (prev && 
+                 prev.south === bounds.south && 
+                 prev.west === bounds.west && 
+                 prev.north === bounds.north && 
+                 prev.east === bounds.east) {
+                 return prev;
+             }
+             return bounds;
+        });
+    }, []);
+
     const handleSearch = useCallback((filters: { specialty: string; city: string; area: string; type: string }) => {
         setCity(filters.city);
         if (filters.specialty && filters.specialty !== "Search by Speciality") {
@@ -439,6 +510,9 @@ const FindDoctorsPage: React.FC = () => {
         }
         setArea(filters.area);
         setType(filters.type);
+        setCurrentBounds(null);
+        setMapSelectedDoctorId(null);
+        setSearchTrigger(prev => prev + 1);
     }, []);
 
     const handleAreaInputChange = (query: string) => {
@@ -447,19 +521,17 @@ const FindDoctorsPage: React.FC = () => {
 
     const handleCardClick = (doc: ClinicListResponse) => {
         setActiveDoctor(doc);
-        // Find matching mock data for detailed overlay
         const mockDoc = MOCK_DOCTORS.find(m => String(m.id) === doc.id);
         if (mockDoc) {
              setOverlayDoctor(mockDoc);
         } else {
-             // Fallback: Create detailed view from available API list info
              setOverlayDoctor({
                 id: Number(doc.id),
                 name: doc.name,
                 specialty: doc.specializations || "Specialist",
                 experience: "10+ years",
                 location: doc.locality,
-                clinic: doc.address || doc.name + " Clinic", // Fallback
+                clinic: doc.address || doc.name + " Clinic",
                 clinicAddress: doc.address + ", " + doc.locality,
                 fee: "₹500",
                 availability: "Available Today",
@@ -476,12 +548,10 @@ const FindDoctorsPage: React.FC = () => {
     const handleBookClick = (e: React.MouseEvent, doc: ClinicListResponse) => {
         e.stopPropagation();
         
-        // Find matching mock data for booking details if available, else create dummy
         const mockDoc = MOCK_DOCTORS.find(m => String(m.id) === doc.id);
         if (mockDoc) {
              setBookingDoctor(mockDoc);
         } else {
-             // Create dummy mock doctor for booking modal
              setBookingDoctor({
                  id: Number(doc.id),
                  name: doc.name,
@@ -507,7 +577,7 @@ const FindDoctorsPage: React.FC = () => {
     const handleBookFromOverlay = () => {
          if (overlayDoctor) {
              setBookingDoctor(overlayDoctor);
-             setOverlayDoctor(null); // Close overlay
+             setOverlayDoctor(null);
              setIsBooked(false);
              setBookingSlot(null);
              setPatientName("");
@@ -526,13 +596,12 @@ const FindDoctorsPage: React.FC = () => {
                 date: bookingSlot.date,
                 time: bookingSlot.time,
                 patientName: patientName,
-                status: 'Attending' // Default status for new booking
+                status: 'Attending',
+                bookingDate: new Date().toISOString()
             };
             
-            // Save to local state
             setMyAppointments(prev => [...prev, newApp]);
             
-            // Save to Local Storage for History Page
             try {
                 const stored = localStorage.getItem('appointments');
                 const existingApps = stored ? JSON.parse(stored) : [];
@@ -593,18 +662,23 @@ const FindDoctorsPage: React.FC = () => {
                     <MapComponent 
                         center={mapCenter} 
                         zoom={13} 
-                        locations={doctors.map(d => ({
-                            id: d.id,
-                            lat: parseFloat(d.lat),
-                            lng: parseFloat(d.lng),
-                            name: d.name,
-                            type: d.specializations || "Doctor"
-                        }))}
-                        activeLocation={activeDoctor ? { 
+                        onBoundsChange={handleBoundsChange}
+                        locations={doctors
+                            .filter(d => d.lat && d.lng && !isNaN(parseFloat(d.lat)) && !isNaN(parseFloat(d.lng)))
+                            .map(d => ({
+                                id: d.id,
+                                lat: parseFloat(d.lat),
+                                lng: parseFloat(d.lng),
+                                name: d.name,
+                                type: d.name + " " + (d.specializations || "")
+                            }))
+                        }
+                        activeLocation={(activeDoctor && activeDoctor.lat && activeDoctor.lng && !isNaN(parseFloat(activeDoctor.lat)) && !isNaN(parseFloat(activeDoctor.lng))) ? { 
                             lat: parseFloat(activeDoctor.lat), 
                             lng: parseFloat(activeDoctor.lng), 
                             name: activeDoctor.name 
                         } : null}
+                        onMarkerClick={handleMarkerClick}
                     />
                 </div>
 
@@ -619,7 +693,6 @@ const FindDoctorsPage: React.FC = () => {
                               placeholder="Search..." 
                               className="fd-inner-search-input"
                               onChange={(e) => {
-                                  // Simple local filter for visual feedback
                                   const val = e.target.value.toLowerCase();
                                   const items = document.querySelectorAll('.fd-doctor-card');
                                   items.forEach((item) => {
@@ -632,6 +705,31 @@ const FindDoctorsPage: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* Show Reset Filter Option if map selection is active */}
+                    {mapSelectedDoctorId && (
+                        <div style={{ padding: '0 16px 12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <span style={{ fontSize: '13px', color: '#64748b' }}>
+                                Showing 1 result for selected clinic
+                            </span>
+                            <button 
+                                onClick={() => setMapSelectedDoctorId(null)}
+                                style={{ 
+                                    background: 'none', 
+                                    border: 'none', 
+                                    color: '#2563eb', 
+                                    cursor: 'pointer', 
+                                    fontSize: '13px', 
+                                    fontWeight: 500,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '4px'
+                                }}
+                            >
+                                <X size={14} /> Show All
+                            </button>
+                        </div>
+                    )}
+
                     <div className="fd-list-scroll">
                         {loading && <div style={{textAlign:'center', padding:'20px'}}>Loading...</div>}
                         
@@ -641,8 +739,9 @@ const FindDoctorsPage: React.FC = () => {
                             </div>
                         )}
 
-                        {doctors.map((doc, index) => {
-                            // Mocking status for UI matching
+                        {doctors
+                            .filter(doc => !mapSelectedDoctorId || doc.id === mapSelectedDoctorId)
+                            .map((doc, index) => {
                             const isOpen = index % 3 !== 0; 
                             const statusColor = isOpen ? '#28a745' : '#dc3545';
                             const statusText = isOpen ? 'Open' : 'Closed';
@@ -699,11 +798,11 @@ const FindDoctorsPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* Clinic Details Overlay (Red Pattern) */}
+            {/* Clinic Details Overlay */}
             {overlayDoctor && (
                 <div className="clinic-overlay-backdrop" onClick={() => setOverlayDoctor(null)}>
                     <div className="clinic-overlay-card" onClick={(e) => e.stopPropagation()}>
-                        {/* Header with Pattern */}
+                        {/* Header */}
                         <div className="co-header">
                             <button className="co-close-btn" onClick={() => setOverlayDoctor(null)}>
                                 <X size={24} />
@@ -714,13 +813,12 @@ const FindDoctorsPage: React.FC = () => {
                                 <p className="co-location">{overlayDoctor.location || (overlayDoctor as any).locality}</p>
                             </div>
                             {(() => {
-                                // Extract lat/lng safely (API provides lat/lng strings, Mocks might not)
                                 const docLat = (overlayDoctor as any).lat ? parseFloat((overlayDoctor as any).lat) : 0;
                                 const docLng = (overlayDoctor as any).lng ? parseFloat((overlayDoctor as any).lng) : 0;
                                 
                                 if (userLocation && docLat && docLng) {
                                     const dist = calculateDistance(userLocation.lat, userLocation.lng, docLat, docLng);
-                                    const etaMins = Math.round((dist * 60) / 30); // Approx 30km/h avg speed
+                                    const etaMins = Math.round((dist * 60) / 30);
                                     return (
                                         <div 
                                             className="co-distance-badge" 
@@ -734,7 +832,6 @@ const FindDoctorsPage: React.FC = () => {
                                         </div>
                                     );
                                 } else if (docLat && docLng) {
-                                     // Just show Get Directions if user location unknown
                                      return (
                                         <div 
                                             className="co-distance-badge" 
@@ -747,7 +844,6 @@ const FindDoctorsPage: React.FC = () => {
                                         </div>
                                      );
                                 } else {
-                                     // Fallback: No coords found. Allow search query.
                                      return (
                                         <div 
                                             className="co-distance-badge"

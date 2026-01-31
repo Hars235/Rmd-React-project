@@ -129,6 +129,50 @@ const LabTestsPage: FC = () => {
       setTimeout(() => setShowDropdown(false), 200);
   };
 
+  const [cart, setCart] = useState<number[]>([]);
+  const [notification, setNotification] = useState<{message: string; onUndo: () => void} | null>(null);
+
+  /* --- Filter Data based on Query --- */
+  const filteredTests = TOP_BOOKED_TESTS.filter(test => 
+    test.name.toLowerCase().includes(query.toLowerCase())
+  );
+
+  const filteredPackages = HEALTH_PACKAGES.filter(pkg => 
+    pkg.name.toLowerCase().includes(query.toLowerCase())
+  );
+
+  const handleSelection = (name: string) => {
+      setQuery(name);
+      setShowDropdown(false);
+  };
+
+  const toggleCart = (item: {id: number, name: string}) => {
+    setCart(prev => {
+        const exists = prev.includes(item.id);
+        let newCart;
+        if (exists) {
+            newCart = prev.filter(id => id !== item.id);
+            showNotification(`Removed ${item.name}`, () => addToCart(item.id)); // Undo adds it back
+        } else {
+            newCart = [...prev, item.id];
+            showNotification(`Added ${item.name} to cart`, () => removeFromCart(item.id)); // Undo removes it
+        }
+        return newCart;
+    });
+  };
+
+  // Helper for Undo actions to modify cart directly without triggering another notification
+  const addToCart = (id: number) => setCart(prev => [...prev, id]);
+  const removeFromCart = (id: number) => setCart(prev => prev.filter(i => i !== id));
+
+  const showNotification = (message: string, onUndo: () => void) => {
+      setNotification({ message, onUndo });
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+          setNotification(prev => (prev?.message === message ? null : prev));
+      }, 3000);
+  };
+
   return (
     <div className="rmd-lab-page">
       {/* City Modal */}
@@ -162,7 +206,9 @@ const LabTestsPage: FC = () => {
           <div className="rmd-lab-header">
             <h1>Book Lab Tests Online</h1>
             <div className="rmd-lab-actions">
-               <button className="btn-secondary">Cart</button>
+               <button className="btn-secondary">
+                  Cart {cart.length > 0 && `(${cart.length})`}
+               </button>
             </div>
           </div>
           
@@ -178,7 +224,10 @@ const LabTestsPage: FC = () => {
                       type="text" 
                       placeholder="Search for tests, packages & profiles" 
                       value={query}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          setQuery(e.target.value);
+                          setShowDropdown(true);
+                      }}
                       onFocus={handleSearchFocus}
                       onBlur={handleSearchBlur}
                     />
@@ -194,8 +243,12 @@ const LabTestsPage: FC = () => {
                               <span className="rmd-dd-icon">🧪</span>
                               <span>Top booked Tests</span>
                           </div>
-                          {TOP_BOOKED_TESTS.slice(0, 5).map(test => (
-                              <div key={test.id} className="rmd-dropdown-item">
+                          {TOP_BOOKED_TESTS.filter(t => t.name.toLowerCase().includes(query.toLowerCase())).slice(0, 5).map(test => (
+                              <div 
+                                key={test.id} 
+                                className="rmd-dropdown-item"
+                                onMouseDown={() => handleSelection(test.name)} 
+                              >
                                   {test.name}
                               </div>
                           ))}
@@ -205,8 +258,12 @@ const LabTestsPage: FC = () => {
                               <span className="rmd-dd-icon">📦</span>
                               <span>Top booked Packages</span>
                           </div>
-                          {HEALTH_PACKAGES.slice(0, 3).map(pkg => (
-                              <div key={pkg.id} className="rmd-dropdown-item">
+                          {HEALTH_PACKAGES.filter(p => p.name.toLowerCase().includes(query.toLowerCase())).slice(0, 3).map(pkg => (
+                              <div 
+                                key={pkg.id} 
+                                className="rmd-dropdown-item"
+                                onMouseDown={() => handleSelection(pkg.name)}
+                              >
                                   {pkg.name}
                               </div>
                           ))}
@@ -220,57 +277,123 @@ const LabTestsPage: FC = () => {
       </section>
 
       {/* Top Booked Diagnostic Tests */}
-      <section className="rmd-section rmd-lab-section">
-        <div className="rmd-section-header">
-           <h2>Top Booked Diagnostic Tests</h2>
-           <span className="rmd-tag-green">⚡ Get reports within 24hrs</span>
-        </div>
-        
-        <div className="rmd-horizontal-scroll">
-           {TOP_BOOKED_TESTS.map((test) => (
-             <div key={test.id} className="rmd-test-card">
-                <div className="rmd-test-header">
-                   <h3>{test.name}</h3>
-                   <span className="rmd-price">₹{test.price}</span>
-                </div>
-                <p className="rmd-test-desc">{test.description}</p>
-                <button className="btn-outline-primary rmd-btn-add">ADD TO CART</button>
-             </div>
-           ))}
-        </div>
-      </section>
+      {filteredTests.length > 0 && (
+          <section className="rmd-section rmd-lab-section">
+            <div className="rmd-section-header">
+               <h2>Top Booked Diagnostic Tests</h2>
+               <span className="rmd-tag-green">⚡ Get reports within 24hrs</span>
+            </div>
+            
+            <div className="rmd-horizontal-scroll">
+               {filteredTests.map((test) => {
+                 const isInCart = cart.includes(test.id);
+                 return (
+                   <div key={test.id} className="rmd-test-card">
+                      <div className="rmd-test-header">
+                         <h3>{test.name}</h3>
+                         <span className="rmd-price">₹{test.price}</span>
+                      </div>
+                      <p className="rmd-test-desc">{test.description}</p>
+                      <button 
+                        className={`btn-outline-primary rmd-btn-add ${isInCart ? 'btn-danger' : ''}`}
+                        style={isInCart ? { borderColor: '#ef4444', color: '#ef4444' } : {}} 
+                        onClick={() => toggleCart(test)}
+                      >
+                        {isInCart ? 'REMOVE' : 'ADD TO CART'}
+                      </button>
+                   </div>
+                 );
+               })}
+            </div>
+          </section>
+      )}
 
       {/* Popular Health Packages */}
-      <section className="rmd-section rmd-lab-section">
-        <h2>Popular Health Checkup Packages</h2>
-        
-        <div className="rmd-tabs">
-            {PACKAGE_TABS.map((tab) => (
-                <button 
-                    key={tab} 
-                    className={`rmd-tab-pill ${activePackageTab === tab ? 'active' : ''}`}
-                    onClick={() => setActivePackageTab(tab)}
-                >
-                    {tab}
-                </button>
-            ))}
-        </div>
+      {filteredPackages.length > 0 && (
+          <section className="rmd-section rmd-lab-section">
+            <h2>Popular Health Checkup Packages</h2>
+            
+            <div className="rmd-tabs">
+                {PACKAGE_TABS.map((tab) => (
+                    <button 
+                        key={tab} 
+                        className={`rmd-tab-pill ${activePackageTab === tab ? 'active' : ''}`}
+                        onClick={() => setActivePackageTab(tab)}
+                    >
+                        {tab}
+                    </button>
+                ))}
+            </div>
 
-        <div className="rmd-horizontal-scroll">
-           {HEALTH_PACKAGES.map((pkg) => (
-             <div key={pkg.id} className="rmd-package-card">
-                 <div className="rmd-pkg-badge">{pkg.discount}</div>
-                 <h3 className="rmd-pkg-title">{pkg.name}</h3>
-                 <p className="rmd-pkg-price">₹{pkg.price}</p>
-                 {/* Simulate family image or placeholder */}
-                 <div className="rmd-pkg-image-placeholder">
-                    <span>🏥</span>
-                 </div>
-                 <button className="btn-outline-primary rmd-btn-add">ADD TO CART</button>
-             </div>
-           ))}
+            <div className="rmd-horizontal-scroll">
+               {filteredPackages.map((pkg) => {
+                 const isInCart = cart.includes(pkg.id);
+                 return (
+                   <div key={pkg.id} className="rmd-package-card">
+                       <div className="rmd-pkg-badge">{pkg.discount}</div>
+                       <h3 className="rmd-pkg-title">{pkg.name}</h3>
+                       <p className="rmd-pkg-price">₹{pkg.price}</p>
+                       <div className="rmd-pkg-image-placeholder">
+                          <span>🏥</span>
+                       </div>
+                       <button 
+                          className={`btn-outline-primary rmd-btn-add ${isInCart ? 'btn-danger' : ''}`}
+                          style={isInCart ? { borderColor: '#ef4444', color: '#ef4444' } : {}}
+                          onClick={() => toggleCart(pkg)}
+                       >
+                          {isInCart ? 'REMOVE' : 'ADD TO CART'}
+                       </button>
+                   </div>
+                 );
+               })}
+            </div>
+          </section>
+      )}
+
+      {(filteredTests.length === 0 && filteredPackages.length === 0) && (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+              No results found for "{query}"
+          </div>
+      )}
+
+      {/* Notification Toast */}
+      {notification && (
+        <div style={{
+          position: 'fixed',
+          bottom: '24px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: '#333',
+          color: 'white',
+          padding: '12px 24px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          zIndex: 2000,
+          animation: 'slideUp 0.3s ease-out'
+        }}>
+          <span>{notification.message}</span>
+          <button 
+            onClick={() => {
+              notification.onUndo();
+              setNotification(null);
+            }}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#60a5fa',
+              fontWeight: 700,
+              cursor: 'pointer',
+              textTransform: 'uppercase',
+              fontSize: '14px'
+            }}
+          >
+            UNDO
+          </button>
         </div>
-      </section>
+      )}
     </div>
   );
 };

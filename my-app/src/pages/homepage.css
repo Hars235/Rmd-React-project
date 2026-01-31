@@ -12,6 +12,8 @@
   background-position: center;
   padding: 48px 16px;
   box-sizing: border-box;
+  position: relative;
+  flex-direction: column; 
 }
 
 /* central content container */
@@ -19,9 +21,9 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px; /* Gap between HeroText, Search, and ServiceCards */
 }
 
 /* text */
@@ -46,16 +48,16 @@
 .search-section {
   display: flex;
   justify-content: flex-start;
-  margin-top: 6px;
+  width: 100%;
+  max-width: 1200px;
 }
 
-/* container around search bar (over hero) */
+/* container around search bar */
 .search-container {
   width: 100%;
   background: transparent;
 }
 
-/* small title above search */
 .search-title {
   margin: 0 0 8px;
   font-size: 16px;
@@ -63,15 +65,86 @@
   font-weight: 600;
 }
 
-/* hint */
 .search-hint {
   margin-top: 8px;
   font-size: 13px;
   color: #64748b;
 }
 
-/* stats section (below) */
-.stats-section { margin-top: 18px; }
+/* --- Service Cards Section --- */
+.service-cards-section {
+    width: 100%;
+    margin-top: 10px;
+    z-index: 10;
+    position: relative;
+    display: flex;
+    justify-content: flex-start; /* Align start to match text/search */
+}
+
+.service-cards-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    flex-wrap: wrap;
+    justify-content: flex-start; 
+}
+
+.service-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 16px;
+    flex: 1;
+    min-width: 200px;
+    max-width: 280px; /* Cap width so they don't stretch too wide */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #f1f5f9;
+}
+
+.service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+.service-card-image {
+    width: 100%;
+    height: 120px;
+    border-radius: 8px;
+    background: #f8fafc;
+    margin-bottom: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.service-card-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.service-card-info h3 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.service-card-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+/* Stats Section */
+.stats-section { margin-top: 40px; }
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0,1fr));
@@ -85,8 +158,10 @@
 @media (max-width: 900px) {
   .hero-title { font-size: 28px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .service-cards-container { justify-content: center; } /* Center on tablet */
 }
 @media (max-width: 480px) {
   .hero-title { font-size: 22px; }
   .stats-grid { grid-template-columns: 1fr; }
+  .service-card { min-width: 100%; max-width: 100%; }
 }

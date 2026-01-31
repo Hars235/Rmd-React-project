@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, MapPin, Clock, User, CheckCircle } from 'lucide-react';
+import { Calendar, MapPin, Clock, User, CheckCircle, Trash2, Undo } from 'lucide-react';
 import './MyAppointmentsPage.css';
 
 type Appointment = {
@@ -12,10 +12,16 @@ type Appointment = {
     time: string;
     patientName: string;
     status: 'Attending' | 'Attended' | 'Attend Later' | 'Missed';
+    bookingDate?: string;
 };
 
 const MyAppointmentsPage: React.FC = () => {
     const [appointments, setAppointments] = useState<Appointment[]>([]);
+    
+    // -- Deletion State --
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
+    const [deletedItems, setDeletedItems] = useState<Appointment[]>([]);
+    const [showToast, setShowToast] = useState(false);
 
     useEffect(() => {
         const stored = localStorage.getItem('appointments');
@@ -34,12 +40,14 @@ const MyAppointmentsPage: React.FC = () => {
             app.id === id ? { ...app, status: newStatus } : app
         );
         setAppointments(updated);
-        // Save back reversed (or handle the order correctly)
-        // Since we read reversed, we should probably un-reverse before saving if we care about append order? 
-        // Or just save this list. Saving this list means next load will reverse again.
-        // Better: Find the item in the original storage? 
-        // Simplest: Just save the current list.
-        localStorage.setItem('appointments', JSON.stringify(updated.slice().reverse())); 
+        saveToLocalStorage(updated);
+    };
+
+    const saveToLocalStorage = (apps: Appointment[]) => {
+        // Since we read reversed, we should probably un-reverse before saving if we care about append order.
+        // Or just save the current list as is. Let's save the current display order to avoid confusion.
+        // Actually, let's just save the array as is.
+        localStorage.setItem('appointments', JSON.stringify(apps.slice().reverse())); 
     };
 
     const getStatusColor = (status: string) => {
@@ -52,11 +60,59 @@ const MyAppointmentsPage: React.FC = () => {
         }
     };
 
+    // -- Delete Logic --
+    const toggleSelection = (id: number) => {
+        setSelectedIds(prev => 
+            prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
+        );
+    };
+
+    const deleteSelected = () => {
+        if (selectedIds.length === 0) return;
+
+        // Separate kept and deleted
+        const kept = appointments.filter(app => !selectedIds.includes(app.id));
+        const removed = appointments.filter(app => selectedIds.includes(app.id));
+
+        setAppointments(kept);
+        setDeletedItems(removed);
+        saveToLocalStorage(kept); 
+        
+        setShowToast(true);
+        setSelectedIds([]);
+
+        // Hide toast after 5s
+        setTimeout(() => setShowToast(false), 5000);
+    };
+
+    const undoDelete = () => {
+        if (deletedItems.length === 0) return;
+
+        // Restore items (and maybe sort them back by ID or date if needed? For now just append/prepend)
+        // Since id is timestamp, sorting by id desc puts them back in correct chronological order (newest first)
+        const restored = [...appointments, ...deletedItems].sort((a, b) => b.id - a.id);
+        
+        setAppointments(restored);
+        saveToLocalStorage(restored);
+        
+        setDeletedItems([]);
+        setShowToast(false);
+    };
+
     return (
         <div className="history-container">
             <header className="history-header">
-                <h1>Appointment Booked History</h1>
-                <p>Manage your booked appointments and track their status.</p>
+                <div className="history-header-content">
+                    <h1>Appointment Booked History</h1>
+                    <p>Manage your booked appointments and track their status.</p>
+                </div>
+                
+                {selectedIds.length > 0 && (
+                    <button className="delete-btn" onClick={deleteSelected}>
+                        <Trash2 size={18} />
+                        Delete ({selectedIds.length})
+                    </button>
+                )}
             </header>
 
             <div className="history-content">
@@ -76,6 +132,15 @@ const MyAppointmentsPage: React.FC = () => {
                     ) : (
                         appointments.map(app => (
                             <div key={app.id} className="history-card">
+                                <div className="card-select-container">
+                                    <input 
+                                        type="checkbox" 
+                                        className="card-checkbox"
+                                        checked={selectedIds.includes(app.id)}
+                                        onChange={() => toggleSelection(app.id)}
+                                    />
+                                </div>
+
                                 <div className="card-header">
                                     <div>
                                         <h2>{app.doctorName}</h2>
@@ -126,6 +191,17 @@ const MyAppointmentsPage: React.FC = () => {
                     )}
                 </div>
             </div>
+
+            {/* Undo Toast */}
+            {showToast && (
+                <div className="undo-toast">
+                    <span>{deletedItems.length} appointment(s) deleted</span>
+                    <button className="undo-btn" onClick={undoDelete}>
+                        <Undo size={14} />
+                        Undo
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

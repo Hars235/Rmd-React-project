@@ -1,0 +1,1 @@
+﻿const fetch = require('node-fetch'); async function test() { const res = await fetch('https://reachmydoctor.in/api/v1/autocomplete/get_localities', { method: 'POST', body: JSON.stringify({city: 'Bengaluru', search_term: 'Jayanagar'}) }); const data = await res.json(); console.log(JSON.stringify(data, null, 2)); } test();

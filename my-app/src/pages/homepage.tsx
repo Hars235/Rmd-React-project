@@ -1,7 +1,7 @@
 // src/pages/Home.tsx
 import React, { useState, useEffect } from 'react';
 import SearchBar from '../components/searchbar';
-import './Home.css';
+import './homepage.css'; // Corrected import to match filename
 
 // Define TypeScript interfaces
 interface Feature {
@@ -72,7 +72,7 @@ const Home: React.FC = () => {
         <div className="hero-bg-overlay" />
 
         {/* center content with max width so the hero image stays full width but content aligns */}
-        <div className="hero-inner">
+        <div className="hero-content">
           <div className="hero-text">
             <h1 className="hero-title">
               Find and consult doctors <span className="highlight">anytime, anywhere</span>
@@ -96,6 +96,52 @@ const Home: React.FC = () => {
                 }}
               />
               <p className="search-hint">Search by specialty, doctor name, or symptoms</p>
+            </div>
+          </div>
+
+          {/* Service Cards Section (Inserted INSIDE hero content) */}
+          <div className="service-cards-section">
+            <div className="service-cards-container">
+              {[
+                { 
+                  title: "Doctors", 
+                  subtitle: "Book an appointment", 
+                  link: "/find-doctors", 
+                  image: "https://www.practostatic.com/consumer-home/desktop/images/1597423628/dweb_find_doctors.png" 
+                },
+                { 
+                  title: "Chat", 
+                  subtitle: "Chat with top doctors", 
+                  link: "/video-consult", 
+                  image: "https://www.practostatic.com/consumer-home/desktop/images/1597423628/dweb_instant_video_consulation.png" 
+                },
+                { 
+                  title: "Pharmacy", 
+                  subtitle: "Medicines & health products", 
+                  link: "/pharmacy", 
+                  image: "https://www.practostatic.com/consumer-home/desktop/images/1597423628/dweb_medicines.png" 
+                },
+                { 
+                  title: "Diagnostics", 
+                  subtitle: "Book tests & checkups", 
+                  link: "/lab-tests", 
+                  image: "https://www.practostatic.com/consumer-home/desktop/images/1597423628/dweb_lab_tests.png" 
+                }
+              ].map((card, index) => (
+                <div 
+                  key={index} 
+                  className="service-card"
+                  onClick={() => navigate(card.link)}
+                >
+                  <div className="service-card-image">
+                     <img src={card.image} alt={card.title} onError={(e) => (e.target as HTMLImageElement).style.display='none'} />
+                  </div>
+                  <div className="service-card-info">
+                    <h3>{card.title}</h3>
+                    <p>{card.subtitle}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

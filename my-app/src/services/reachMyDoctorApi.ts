@@ -337,7 +337,10 @@ class ReachMyDoctorApi {
         });
 
         const data = await response.json();
-        return Array.isArray(data) ? data : [];
+        if (Array.isArray(data)) {
+            return data.filter((item: any) => item && typeof item.locality === 'string' && item.locality.trim() !== "");
+        }
+        return [];
     } catch (err) {
         console.error("getLocalities failed", err);
         return [];
@@ -361,11 +364,37 @@ class ReachMyDoctorApi {
   // --- Doctor & Clinic Search APIs (V1) ---
 
   /**
+   * Helper to format the search type for the API.
+   * Maps facility types to "Clinic:..." and specializations to "doctor:...".
+   */
+  private static formatType(type: string): string {
+      if (!type) return "doctor:General Physician"; // Default fallback
+      
+      const lower = type.toLowerCase();
+      if (type.includes(":")) return type; // Already formatted
+
+      // Facility Types
+      if (lower === "clinic") return "Clinic:Clinic";
+      if (lower === "hospital") return "Clinic:Hospital";
+      if (lower === "pharmacy") return "Clinic:Pharmacy";
+      if (lower === "laboratory" || lower === "lab") return "Clinic:Laboratory";
+      if (lower === "hospitals") return "Clinic:Hospital";
+      if (lower === "pharmacies") return "Clinic:Pharmacy";
+      if (lower === "labs") return "Clinic:Laboratory";
+      if (lower === "nursing home") return "Clinic:Nursing Home";
+
+      // Doctor Specializations
+      // If it's a specific doctor specialization, prefix with doctor:
+      return `doctor:${type}`;
+  }
+
+  /**
    * Search for clinics/doctors by type (specialization) and location.
    */
   static async getClinicsList(type: string, city: string, locality: string = "", book: string = ""): Promise<ClinicListResponse[]> {
+    const formattedType = this.formatType(type);
     const response = await this.request("v1/map/get_clinic_list", {
-      type,
+      type: formattedType,
       city,
       loc: locality,
       booking: book,
@@ -424,15 +453,15 @@ class ReachMyDoctorApi {
 
   static async getMapBasicDetails(specialization: string, city: string, locality: string, coordinates: Coordinates): Promise<BasicDoctorDetails[]> {
       try {
-        const formattedType = specialization === "Clinic" ? "Clinic:Clinic" : (specialization.includes(":") ? specialization : `doctor:${specialization}`);
+        const formattedType = this.formatType(specialization);
         
         const body = JSON.stringify({
             type: formattedType,
             city: city,
-            locality: "", // Force empty locality to use coordinate filtering
+            locality: locality, 
             lat1: coordinates.south.toString(),
-            lat2: coordinates.west.toString(),
-            lng1: coordinates.north.toString(),
+            lat2: coordinates.north.toString(),
+            lng1: coordinates.west.toString(),
             lng2: coordinates.east.toString()
         });
         
@@ -447,14 +476,42 @@ class ReachMyDoctorApi {
         
         const data = await response.json();
         
-        if (data.RESPONSE === "SUCCESS") {
-            return data.MAP_BASIC_DETAILS || [];
+        if (data.RESPONSE === "SUCCESS" && Array.isArray(data.MAP_BASIC_DETAILS)) {
+            return data.MAP_BASIC_DETAILS.filter((d: BasicDoctorDetails) => {
+                 if (!ReachMyDoctorApi.isValidCoordinate(d.lat, d.lng)) return false;
+                 
+                 // Verify if it lies within the requested bounds (Make it match)
+                 const lat = parseFloat(d.lat);
+                 const lng = parseFloat(d.lng);
+                 
+                 // Simple box check
+                 // lat1=south, lat2=north (User snippet passed lat1/lat2 differently in some places, checking impl...)
+                 // Implementation uses: lat1: coordinates.south, lat2: coordinates.north, ...
+                 
+                 return lat >= coordinates.south && lat <= coordinates.north &&
+                        lng >= coordinates.west && lng <= coordinates.east;
+            });
         }
         return [];
       } catch (err) {
           console.error("getMapBasicDetails failed", err);
           return [];
       }
+  }
+
+  /**
+   * Helper to validate latitude and longitude
+   */
+  static isValidCoordinate(lat: string | number, lng: string | number): boolean {
+      const latNum = parseFloat(lat.toString());
+      const lngNum = parseFloat(lng.toString());
+      
+      if (isNaN(latNum) || isNaN(lngNum)) return false;
+      if (latNum === 0 && lngNum === 0) return false; 
+      if (latNum < -90 || latNum > 90) return false;
+      if (lngNum < -180 || lngNum > 180) return false;
+      
+      return true;
   }
 
   // --- Clinic & Doctor Details (V1) ---
